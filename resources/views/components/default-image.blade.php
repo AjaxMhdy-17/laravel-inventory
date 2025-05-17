@@ -1,0 +1,1 @@
+{{ asset('backend/assets/dist/img/avatar5.png') }}
