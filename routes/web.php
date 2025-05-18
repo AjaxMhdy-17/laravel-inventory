@@ -3,6 +3,7 @@
 use App\Http\Controllers\backend\BlogCategoryController;
 use App\Http\Controllers\backend\BlogController as BackendBlogController;
 use App\Http\Controllers\backend\BlogTagController;
+use App\Http\Controllers\backend\CustomerController;
 use App\Http\Controllers\backend\DashboardController;
 use App\Http\Controllers\backend\ProfileController;
 use App\Http\Controllers\backend\SiteSettingController;
@@ -21,6 +22,10 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
 
 
     Route::resource('supplier', SupplierController::class);
+
+    Route::prefix('customer')->name('customer.')->group(function () {
+        Route::resource('all', CustomerController::class);
+    });
 
 
 

@@ -3,24 +3,25 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 trait HandlesImageUploads
 {
-    function uploadImage($imageFile, $uploadPath, $width = null, $height = null)
+    public function uploadImage($imageFile, $uploadPath, $width = null, $height = null)
     {
-        $randomString = bin2hex(random_bytes(3)); 
-        $image_name = date('dmy_H_s_i') . '_' . $randomString;
-        $ext = strtolower($imageFile->getClientOriginalExtension());
-        $image_full_name = $image_name . '.' . $ext;
-        if (!file_exists($uploadPath)) {
-            mkdir($uploadPath, 0755, true);
+        $name_gen = hexdec(uniqid()) . '.' . $imageFile->getClientOriginalExtension();
+        $destinationPath = public_path($uploadPath);
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
         }
-        $imageFile->move($uploadPath, $image_full_name);
-        $imagePath = $uploadPath . $image_full_name;
+        $manager = new ImageManager(new Driver());
+        $img = $manager->read($imageFile);
         if ($width !== null && $height !== null) {
-            $this->resizeImage($imagePath, $width, $height);
+            $img->resize($width, $height);
         }
-        return $imagePath;
+        $img->save($destinationPath . '/' . $name_gen);
+        return $uploadPath . '/' . $name_gen;
     }
 
     function resizeImage($imagePath, $width, $height)
@@ -64,10 +65,10 @@ trait HandlesImageUploads
     }
 
 
-    public function deleteImage($image)
+    public function deleteImage($photo)
     {
-        if ($image != null) {
-            unlink($image);
+        if ($photo != null && file_exists($photo)) {
+            unlink($photo);
             return true;
         }
         return false;

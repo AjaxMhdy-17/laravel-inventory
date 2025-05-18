@@ -57,6 +57,43 @@
                 </li>
 
 
+
+                <li
+                    class="nav-item {{ request()->routeIs('admin.customer.*') ? ' menu-is-opening menu-open active' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-copy"></i>
+                        <p>
+                            Customer
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.customer.all.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.customer.all*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>All Customer List</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.blog.category.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.blog.category*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Category</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.blog.tag.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tag</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
                 <li
                     class="nav-item {{ request()->routeIs('admin.blog.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">

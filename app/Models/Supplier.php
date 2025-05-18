@@ -9,4 +9,11 @@ class Supplier extends Model
 {
     use HasFactory;
     protected $fillable = ['name','phone','email','address'] ; 
+
+
+
+    public function scopeLatest($query){
+        return $query->orderBy('created_at','desc') ;
+    }
+
 }

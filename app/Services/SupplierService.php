@@ -14,12 +14,31 @@ class SupplierService
 
     public function __construct(SupplierRepository $supplierRepository)
     {
-        $this->supplierRepository = $supplierRepository ; 
+        $this->supplierRepository = $supplierRepository;
     }
 
     public function createSupplier($data)
     {
         $data = new SupplierDTO($data);
-        return $this->supplierRepository->create($data) ; 
+        return $this->supplierRepository->create($data);
     }
+
+    public function find($id)
+    {
+        return $this->supplierRepository->find($id);
+    }
+
+    public function updateSupplier($data , $id)
+    {
+        $data = new SupplierDTO($data);
+        return $this->supplierRepository->update($data , $id);
+    }
+
+
+    public function deleteSupplier($id)
+    {
+        return $this->supplierRepository->delete($id);
+    }
+
+    
 }

@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Services\SupplierService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 class SupplierController extends Controller
@@ -26,13 +27,13 @@ class SupplierController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $suppliers = Supplier::query();
+            $suppliers = Supplier::query()->latest();
             return DataTables::eloquent($suppliers)
                 ->addColumn('created_at', function ($supplier) {
                     return Carbon::parse($supplier->created_at)->format('Y-m-d');
                 })
                 ->addColumn('action', function ($supplier) {
-                    return'
+                    return '
                        <div class="action">
                             <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -55,7 +56,6 @@ class SupplierController extends Controller
                 ->make(true);
         }
         $data['title'] = "Supplier";
-        $data['teams'] = Team::all();
         return view('backend.supplier.list', $data);
     }
 
@@ -84,19 +84,13 @@ class SupplierController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        //
+        $data['supplier'] = $this->supplierService->find($id);
+        $data['title'] = "Supplier";
+        return view('backend.supplier.edit', $data);
     }
 
     /**
@@ -104,7 +98,13 @@ class SupplierController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data = $this->dataValidation($request, $id);
+        $this->supplierService->updateSupplier($data, $id);
+        $notification = array(
+            'message' => "Supplier Updated Successfully !",
+            'alert-type' => 'success'
+        );
+        return redirect()->route('admin.supplier.index')->with($notification);
     }
 
     /**
@@ -112,14 +112,23 @@ class SupplierController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $this->supplierService->deleteSupplier($id);
+        $notification = array(
+            'message' => "Supplier Deleted Successfully !",
+            'alert-type' => 'success'
+        );
+        return redirect()->route('admin.supplier.index')->with($notification);
     }
 
-    public function dataValidation($request)
+    public function dataValidation($request, $id = null)
     {
         return $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:suppliers',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('suppliers')->ignore($id)
+            ],
             'phone' => 'required',
             'address' => 'required'
         ]);

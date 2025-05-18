@@ -13,7 +13,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">{{$title}}</li>
+                            <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div>
                 </div>
@@ -29,8 +29,8 @@
                             <div class="card__header">
                                 <h3 class="card-title">List Of {{ $title }}</h3>
                                 <div class="d-flex gap-3">
-                                    <a href="{{ route('admin.supplier.create') }}" class="btn btn-primary d-block">
-                                        Add {{$title}}
+                                    <a href="{{ route('admin.customer.all.create') }}" class="btn btn-primary d-block">
+                                        Add {{ $title }}
                                     </a>
 
 
@@ -58,13 +58,14 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="card-body table-responsive">
-                                                <table class="table table-bordered table-striped myDatatable" style="width : 100%">
+                                                <table class="table table-bordered table-striped myDatatable"
+                                                    style="width : 100%">
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
+                                                            <th>Photo</th>
                                                             <th>Email</th>
                                                             <th>Phone</th>
-                                                            <th>Address</th>
                                                             <th>Created</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -95,13 +96,18 @@
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.supplier.index') }}',
+                    url: '{{ route('admin.customer.all.index') }}',
                 },
-            
-                columns: [
-                    {
+
+                columns: [{
                         data: 'name',
                         name: 'name'
+                    },
+                    {
+                        data: 'photo',
+                        name: 'photo',
+                        orderable: false,
+                        className: "text-center",
                     },
                     {
                         data: 'email',
@@ -114,12 +120,7 @@
                         orderable: false,
                         className: "text-center",
                     },
-                    {
-                        data: 'address',
-                        name: 'address',
-                        orderable: false,
-                        className: "text-center",
-                    },
+
                     {
                         data: 'created_at',
                         name: 'created_at',
@@ -200,8 +201,8 @@
         }
 
         /* .sorting_disabled {
-                    background: purple !important ;
-                } */
+                        background: purple !important ;
+                    } */
         .card__header {
             display: flex;
             justify-content: space-between;
