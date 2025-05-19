@@ -76,12 +76,22 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.blog.category.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.blog.category*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.customer.unit.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.customer.unit*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Unit</p>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.customer.category.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.customer.category*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Category</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="{{ route('admin.blog.tag.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">

@@ -3,13 +3,14 @@
 use App\Http\Controllers\backend\BlogCategoryController;
 use App\Http\Controllers\backend\BlogController as BackendBlogController;
 use App\Http\Controllers\backend\BlogTagController;
+use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\backend\CustomerController;
 use App\Http\Controllers\backend\DashboardController;
 use App\Http\Controllers\backend\ProfileController;
 use App\Http\Controllers\backend\SiteSettingController;
 use App\Http\Controllers\backend\SupplierController;
 use App\Http\Controllers\backend\TeamController;
-
+use App\Http\Controllers\backend\UnitController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/dashboard');
@@ -24,7 +25,9 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
     Route::resource('supplier', SupplierController::class);
 
     Route::prefix('customer')->name('customer.')->group(function () {
+        Route::resource('category', CategoryController::class);
         Route::resource('all', CustomerController::class);
+        Route::resource('unit', UnitController::class);
     });
 
 

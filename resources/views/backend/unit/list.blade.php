@@ -13,7 +13,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">{{$title}}</li>
+                            <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div>
                 </div>
@@ -29,8 +29,8 @@
                             <div class="card__header">
                                 <h3 class="card-title">List Of {{ $title }}</h3>
                                 <div class="d-flex gap-3">
-                                    <a href="{{ route('admin.team.create') }}" class="btn btn-primary d-block">
-                                        Add {{$title}}
+                                    <a href="{{ route('admin.customer.unit.create') }}" class="btn btn-primary d-block">
+                                        Add {{ $title }}
                                     </a>
 
 
@@ -58,14 +58,11 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="card-body table-responsive">
-                                                <table class="table table-bordered table-striped myDatatable" style="width : 100%">
+                                                <table class="table table-bordered table-striped myDatatable"
+                                                    style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            <th class="sorting_disabled"><input type="checkbox"
-                                                                    id="select-all"></th>
                                                             <th>Name</th>
-                                                            <th>Designation</th>
-                                                            <th>Image</th>
                                                             <th>Status</th>
                                                             <th>Created</th>
                                                             <th>Action</th>
@@ -97,54 +94,16 @@
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.team.index') }}',
+                    url: '{{ route('admin.customer.unit.index') }}',
                 },
-                dom: `<"row mb-3"
-                <"col-md-6"B>
-                <"col-md-6"f>
-             >
-             <"row"
-                <"col-sm-12"tr>
-             >
-             <"row"
-                <"col-sm-5"i>
-                <"col-sm-7"p>
-             >`,
-                buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'],
-                language: {
-                    search: "Search:",
-                    lengthMenu: "Show _MENU_ entries",
-                    zeroRecords: "No matching records found",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                },
+
                 columns: [{
-                        data: 'id',
-                        name: 'id',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, full, meta) {
-                            return `<input type="checkbox" class="row-checkbox" value="${data}">`;
-                        },
-                    },
-                    {
                         data: 'name',
                         name: 'name'
                     },
                     {
-                        data: 'designation',
-                        name: 'designation',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'photo',
-                        name: 'photo',
-                        orderable: false,
-                        className: "text-center",
-                    },
-                    {
                         data: 'status',
                         name: 'status',
-                        orderable: false,
                         className: "text-center",
                     },
                     {
@@ -227,8 +186,8 @@
         }
 
         /* .sorting_disabled {
-                    background: purple !important ;
-                } */
+                            background: purple !important ;
+                        } */
         .card__header {
             display: flex;
             justify-content: space-between;
