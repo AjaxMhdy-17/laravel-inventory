@@ -61,7 +61,7 @@
                 <li
                     class="nav-item {{ request()->routeIs('admin.customer.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-copy"></i>
+                        <i class="nav-icon fa fa-address-book" aria-hidden="true"></i>
                         <p>
                             Customer
                             <i class="fas fa-angle-left right"></i>
@@ -100,6 +100,17 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.product.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.product.*') ? 'active' : '' }}">
+                        <i class="nav-icon fa fa-square" aria-hidden="true"></i>
+                        <p>
+                            Product
+                        </p>
+                    </a>
                 </li>
 
 
