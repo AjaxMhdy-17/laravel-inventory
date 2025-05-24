@@ -8,6 +8,7 @@ use App\Http\Controllers\backend\CustomerController;
 use App\Http\Controllers\backend\DashboardController;
 use App\Http\Controllers\backend\ProductController;
 use App\Http\Controllers\backend\ProfileController;
+use App\Http\Controllers\backend\PurchaseController;
 use App\Http\Controllers\backend\SiteSettingController;
 use App\Http\Controllers\backend\SupplierController;
 use App\Http\Controllers\backend\TeamController;
@@ -24,15 +25,20 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
 
 
     Route::resource('supplier', SupplierController::class);
-    Route::resource('product', ProductController::class);
 
     Route::prefix('customer')->name('customer.')->group(function () {
-        Route::resource('category', CategoryController::class);
+       
         Route::resource('all', CustomerController::class);
         Route::resource('unit', UnitController::class);
     });
 
 
+    Route::prefix('product')->name('product.')->group(function () {
+        Route::resource('all', ProductController::class);
+        Route::resource('category', CategoryController::class);
+        Route::get('purchase/category', [PurchaseController::class , 'getCategory'])->name('purchase.getCategory');
+        Route::resource('purchase', PurchaseController::class);
+    });
 
 
     Route::get('site-setting', [SiteSettingController::class, 'index'])->name('site-setting.index');
@@ -41,7 +47,7 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
     Route::prefix('blog')->name('blog.')->group(function () {
         Route::resource('category', BlogCategoryController::class);
         Route::resource('tag', BlogTagController::class);
-        Route::post('post/bulk-delete', [BackendBlogController::class, 'bulkDelete'])->name('post.bulkDelete');
+        // Route::post('post/bulk-delete', [BackendBlogController::class, 'bulkDelete'])->name('post.bulkDelete');
         Route::resource('post', BackendBlogController::class);
     });
 

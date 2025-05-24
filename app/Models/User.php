@@ -47,13 +47,17 @@ class User extends Authenticatable
     ];
 
 
-    public function blog()
+    public function product()
     {
-        return $this->hasMany(BlogPost::class, 'user_id');
+        return $this->hasMany(Product::class, 'user_id');
     }
 
     public function scopeActiveUser(Builder $query)
     {
         return $query->withCount('blog')->orderByDesc('blog_count');
     }
+
+
+    
+
 }

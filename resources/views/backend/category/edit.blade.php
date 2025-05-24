@@ -27,11 +27,30 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-
-                                <form class="card-body" action="{{ route('admin.customer.category.update',['category' => $category->id]) }}" method="post"
-                                    enctype="multipart/form-data">
+                                <form class="card-body"
+                                    action="{{ route('admin.product.category.update', ['category' => $category->id]) }}"
+                                    method="post" enctype="multipart/form-data">
                                     @csrf
                                     @method('put')
+
+                                    <div class="mb-3">
+                                        <div class="form-group">
+                                            <label>Supplier Name</label>
+                                            <select name="supplier_id" class="form-control select2" style="width: 100%;">
+                                                @forelse ($suppliers as $supplier)
+                                                    <option value="{{ $supplier->id }}"
+                                                        {{ $category->suppliers->pluck('id')->first() == $supplier->id ? 'selected' : '' }}>
+                                                        {{ $supplier->name }}
+                                                    </option>
+                                                @empty
+                                                    <option>No Option Added</option>
+                                                @endforelse
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+
                                     <div class="mb-3">
                                         <label>Name</label>
                                         <input type="text" name="name"
@@ -47,8 +66,9 @@
                                     <div class="mb-3">
                                         <label>Team Member Status</label>
                                         <div>
-                                            <input type="checkbox" name="status" {{ $category->status == 1 ? 'checked' : '' }}
-                                                data-toggle="toggle" data-size="sm">
+                                            <input type="checkbox" name="status"
+                                                {{ $category->status == 1 ? 'checked' : '' }} data-toggle="toggle"
+                                                data-size="sm">
                                         </div>
                                     </div>
 

@@ -83,15 +83,6 @@
                             </a>
                         </li>
 
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.customer.category.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.customer.category*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Category</p>
-                            </a>
-                        </li>
-
                         <li class="nav-item">
                             <a href="{{ route('admin.blog.tag.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">
@@ -103,7 +94,48 @@
                 </li>
 
 
-                <li class="nav-item">
+                <li
+                    class="nav-item {{ request()->routeIs('admin.product.*') ? ' menu-is-opening menu-open active' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-address-book" aria-hidden="true"></i>
+                        <p>
+                            Product
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.product.all.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.product.all*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>All Product</p>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.product.category.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.product.category*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Category</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.product.purchase.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.product.purchase*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Purchase
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
+                {{-- <li class="nav-item">
                     <a href="{{ route('admin.product.index') }}"
                         class="nav-link {{ request()->routeIs('admin.product.*') ? 'active' : '' }}">
                         <i class="nav-icon fa fa-square" aria-hidden="true"></i>
@@ -111,7 +143,7 @@
                             Product
                         </p>
                     </a>
-                </li>
+                </li> --}}
 
 
 

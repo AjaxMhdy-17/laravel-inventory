@@ -15,7 +15,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Team</li>
+                            <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div>
                 </div>
@@ -29,15 +29,17 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form class="card-body" action="{{ route('admin.team.update', ['team' => $team->id]) }}"
-                                    method="post" enctype="multipart/form-data">
+
+                                <form class="card-body"
+                                    action="{{ route('admin.product.all.update', ['all' => $product->id]) }}" method="post"
+                                    enctype="multipart/form-data">
                                     @csrf
                                     @method('put')
                                     <div class="mb-3">
                                         <label>Name</label>
                                         <input type="text" name="name"
                                             class="form-control @error('name') is-invalid @enderror"
-                                            value="{{ optional($team)->name }}" placeholder="Name">
+                                            value="{{ optional($product)->name }}" placeholder="Name">
                                         @error('name')
                                             <div class="error__msg">
                                                 {{ $message }}
@@ -45,70 +47,89 @@
                                         @enderror
                                     </div>
                                     <div class="mb-3">
-                                        <label>Designation</label>
-                                        <input type="text" name="designation"
-                                            class="form-control @error('designation') is-invalid @enderror"
-                                            value="{{ optional($team)->designation }}" placeholder="Designation">
-                                        @error('designation')
-                                            <div class="error__msg">
-                                                {{ $message }}
+                                        <div class="form-group">
+                                            <label>Supplier Name</label>
+                                            <select name='supplier_id' class="form-control select2" style="width: 100%;">
+                                                @forelse ($suppliers as $supplier)
+                                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                                @empty
+                                                    <option>No Option Added</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-group">
+                                            <label>Category Name</label>
+                                            <select name='category_id' class="form-control select2" style="width: 100%;">
+                                                @forelse ($categories as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @empty
+                                                    <option>No Option Added</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-group">
+                                            <label>Unit Name</label>
+                                            <select name='unit_id' class="form-control select2" style="width: 100%;">
+                                                @forelse ($units as $unit)
+                                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                                @empty
+                                                    <option>No Option Added</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label>Quantity</label>
+                                                <input type="text" name="quantity"
+                                                    class="form-control @error('quantity') is-invalid @enderror"
+                                                    value="{{ optional($product)->quantity }}" placeholder="Quantity">
+                                                @error('quantity')
+                                                    <div class="error__msg">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
                                             </div>
-                                        @enderror
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="sliderImageInput">Photo</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" name="photo" class="custom-file-input"
-                                                    id="sliderImageInput">
-                                                <label class="custom-file-label" for="sliderImageInput">Choose file</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3 text-right">
+                                                <label>Status</label>
+                                                <div>
+                                                    <input type="checkbox" name="status"
+                                                        {{ $product->status == 1 ? 'checked' : '' }} data-toggle="toggle"
+                                                        data-size="sm" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    @if (!empty($team->photo))
-                                        <div class="mb-3 w__180" id="existingImageWrapper">
-                                            <img id="existingImage" class="img-fluid" src="{{ asset($team->photo) }}"
-                                                alt="Existing Image">
+                                    <div class="mb-3">
+                                        <div class="form-group">
+                                            <label for="sliderImageInput">Photo</label>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" name="photo" class="custom-file-input"
+                                                        id="sliderImageInput">
+                                                    <label class="custom-file-label" for="sliderImageInput">Choose
+                                                        file</label>
+                                                </div>
+                                            </div>
                                         </div>
-                                    @endif
-
-                                    <div class="mb-3 w__180" id="imagePreviewWrapper" style="display: none;">
-                                        <img id="uploadedImage" class="img-fluid" src="" alt="New Image Preview">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label>Team Member Status</label>
-                                        <div>
-                                            <input type="checkbox" name="active" {{$team->active == 1 ? 'checked' : ''}} data-toggle="toggle" data-size="sm">
+                                        @if (!empty($product->photo))
+                                            <div class="mb-3 w__180" id="existingImageWrapper">
+                                                <img id="existingImage" class="img-fluid" src="{{ asset($product->photo) }}"
+                                                    alt="Existing Image">
+                                            </div>
+                                        @endif
+                                        <div class="mb-3 w__180" id="imagePreviewWrapper" style="display: none;">
+                                            <img id="uploadedImage" class="img-fluid" src=""
+                                                alt="New Image Preview">
                                         </div>
-                                    </div>
-
-
-                                    <div class="mb-3">
-                                        <label>Facebook url</label>
-                                        <input type="text" name="facebook" class="form-control"
-                                            value="{{ optional($team)->facebook }}" placeholder="Facebook url">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label>Linkedin url</label>
-                                        <input type="text" name="linkedin" class="form-control"
-                                            value="{{ optional($team)->linkedin }}" placeholder="Linkedin url">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label>Github url</label>
-                                        <input type="text" name="github" class="form-control"
-                                            value="{{ optional($team)->github }}" placeholder="Github url">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label>Tweeter url</label>
-                                        <input type="text" name="tweeter" class="form-control"
-                                            value="{{ optional($team)->tweeter }}" placeholder="X url">
                                     </div>
 
                                     <div class="mb-3">
@@ -117,36 +138,83 @@
                                         </button>
                                     </div>
                                 </form>
-
                             </div>
-
                         </div>
-
                     </div>
                 </div>
             </div>
         </section>
     </div>
+
 @endsection
 
 
 
-
 @push('css')
+    <link rel="stylesheet" href="{{ asset('backend/assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('backend/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
+@endpush
 
+@push('css')
     <style>
         .w__180 {
             width: 180px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 40px !important;
+            line-height: 40px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 0;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
         }
     </style>
 @endpush
 
 
 @push('js')
+    <script src="{{ asset('backend/assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+@endpush
 
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $('#sliderImageInput').on('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#uploadedImage').attr('src', e.target.result);
+                        $('#imagePreviewWrapper').show();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreviewWrapper').hide();
+                    $('#uploadedImage').attr('src', '');
+                }
+            });
+        });
+
+        $(function() {
+            $('.select2').select2()
+        });
+    </script>
+@endpush
+
+
+@push('js')
     <script>
         $(document).ready(function() {
             $('#sliderImageInput').on('change', function(event) {

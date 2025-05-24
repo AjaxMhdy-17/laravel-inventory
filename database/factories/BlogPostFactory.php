@@ -19,15 +19,15 @@ class BlogPostFactory extends Factory
      */
     public function definition(): array
     {
-        $title = $this->faker->sentence();
-        return [
-            'user_id' => User::inRandomOrder()->first()->id,
-            'category_id' => Category::inRandomOrder()->first()->id,
-            'title' => $title,
-            'slug' => Str::slug($title) . '-' . rand(1000, 9999),
-            'photo' => "backend/assets/dist/img/photo1.png",
-            'content' => fake()->paragraphs(5, true),
-            'status' => fake()->boolean(),
-        ];
+        // $title = $this->faker->sentence();
+        // return [
+        //     'user_id' => User::inRandomOrder()->first()->id,
+        //     'category_id' => Category::inRandomOrder()->first()->id,
+        //     'title' => $title,
+        //     'slug' => Str::slug($title) . '-' . rand(1000, 9999),
+        //     'photo' => "backend/assets/dist/img/photo1.png",
+        //     'content' => fake()->paragraphs(5, true),
+        //     'status' => fake()->boolean(),
+        // ];
     }
 }

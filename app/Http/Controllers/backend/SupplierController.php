@@ -21,9 +21,7 @@ class SupplierController extends Controller
         $this->supplierService = $supplierService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+  
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -65,7 +63,7 @@ class SupplierController extends Controller
     public function create()
     {
 
-        $data['title'] = "Supplier";
+        $data['title'] = "Supplier Create";
         return view('backend.supplier.create', $data);
     }
 
@@ -89,7 +87,7 @@ class SupplierController extends Controller
     public function edit(string $id)
     {
         $data['supplier'] = $this->supplierService->find($id);
-        $data['title'] = "Supplier";
+        $data['title'] = "Supplier Edit";
         return view('backend.supplier.edit', $data);
     }
 

@@ -29,12 +29,12 @@
                             <div class="card__header">
                                 <h3 class="card-title">List Of {{ $title }}</h3>
                                 <div class="d-flex gap-3">
-                                    <a href="{{ route('admin.product.category.create') }}" class="btn btn-primary d-block">
+                                    <a href="{{ route('admin.product.purchase.create') }}" class="btn btn-primary d-block">
                                         Add {{ $title }}
                                     </a>
 
 
-                                    {{-- <form id="bulk-delete-form" action="{{ route('admin.team.bulkDelete') }}" method="POST"
+                                    <form id="bulk-delete-form" action="{{ route('admin.team.bulkDelete') }}" method="POST"
                                         class="d-inline">
                                         @csrf
 
@@ -44,7 +44,7 @@
                                             class="btn btn-danger d-none ml-3 show-alert-delete-box">
                                             Delete Selected
                                         </button>
-                                    </form> --}}
+                                    </form>
 
                                 </div>
                             </div>
@@ -62,10 +62,14 @@
                                                     style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            <th>Category Name</th>
+                                                            <th class="sorting_disabled"><input type="checkbox"
+                                                                    id="select-all"></th>
+                                                            <th>Name</th>
+                                                            <th>Photo</th>
                                                             <th>Supplier</th>
+                                                            <th>Category</th>
+                                                            <th>Unit</th>
                                                             <th>Status</th>
-                                                            <th>Created</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -95,25 +99,46 @@
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.product.category.index') }}',
+                    url: '{{ route('admin.product.all.index') }}',
                 },
-
                 columns: [{
+                        data: 'id',
+                        name: 'id',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            return `<input type="checkbox" class="row-checkbox" value="${data}">`;
+                        },
+                    },
+                    {
                         data: 'name',
                         name: 'name'
                     },
                     {
+                        data: 'photo',
+                        name: 'photo',
+                        className: "text-center",
+                    },
+                    {
                         data: 'supplier',
-                        name: 'supplier'
+                        name: 'supplier',
+                        orderable: false,
+                        className: "text-center",
+                    },
+                    {
+                        data: 'category',
+                        name: 'category',
+                        orderable: false,
+                        className: "text-center",
+                    },
+                    {
+                        data: 'unit',
+                        name: 'unit',
+                        className: "text-center",
                     },
                     {
                         data: 'status',
                         name: 'status',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at',
                         className: "text-center",
                     },
                     {
@@ -191,8 +216,8 @@
         }
 
         /* .sorting_disabled {
-                                background: purple !important ;
-                            } */
+                                    background: purple !important ;
+                                } */
         .card__header {
             display: flex;
             justify-content: space-between;

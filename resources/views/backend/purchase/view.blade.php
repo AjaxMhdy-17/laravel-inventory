@@ -27,25 +27,9 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card__header">
-                                <h3 class="card-title">List Of {{ $title }}</h3>
-                                <div class="d-flex gap-3">
-                                    <a href="{{ route('admin.product.category.create') }}" class="btn btn-primary d-block">
-                                        Add {{ $title }}
-                                    </a>
-
-
-                                    {{-- <form id="bulk-delete-form" action="{{ route('admin.team.bulkDelete') }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-
-                                        <input type="hidden" name="ids" id="bulk-delete-ids">
-
-                                        <button type="submit" id="bulk-delete"
-                                            class="btn btn-danger d-none ml-3 show-alert-delete-box">
-                                            Delete Selected
-                                        </button>
-                                    </form> --}}
-
+                                <h3 class="card-title">{{ $title }}</h3>
+                                <div>
+                                    <a href="{{ route('admin.product.index') }}" class="btn btn-info">Back</a>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -56,20 +40,54 @@
                                         <div class="col-sm-12 col-md-6"></div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="card-body table-responsive">
-                                                <table class="table table-bordered table-striped myDatatable"
-                                                    style="width : 100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Category Name</th>
-                                                            <th>Supplier</th>
-                                                            <th>Status</th>
-                                                            <th>Created</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <div class="">
+                                                    <label for="">Product Name : </label>
+                                                    <p class=""> {{ $product->name }}</p>
+                                                </div>
+                                                <div class="">
+                                                    <label for="">Product supplier : </label>
+                                                    <p class=""> {{ $product->supplier->name }}</p>
+                                                </div>
+                                                <div class="">
+                                                    <label for="">Product Category : </label>
+                                                    <p class=""> {{ $product->category->name }}</p>
+                                                </div>
+                                                <div class="">
+                                                    <label for="">Product Unit : </label>
+                                                    <p class=""> {{ $product->unit->name }}</p>
+                                                </div>
+                                                <div>
+                                                    <label for="">Product Photo : </label>
+                                                    <p class="">
+                                                        <img src="{{ asset($product->photo) }}"
+                                                            style="height: 120px ; width : 120px ; object-fit : cover"
+                                                            alt="">
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <label for="">Product Added by : </label>
+                                                    <p class=""> {{ $product->user->name }}</p>
+                                                </div>
+                                                <div>
+                                                    <a href="{{ route('admin.product.index') }}"
+                                                        class="btn btn-info">Back</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card-body">
+                                                <div>
+                                                    <label for="">Product Status : </label>
+                                                    {!! $product->status
+                                                        ? '<span class="badge badge-primary">Active</span>'
+                                                        : '<span class="badge badge-danger">In Active</span>' !!}
+                                                </div>
+                                                <div>
+                                                    <label for="">Product Quantity : </label>
+                                                    <span class="badge badge-info">{{$product->quantity}}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -95,25 +113,46 @@
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.product.category.index') }}',
+                    url: '{{ route('admin.product.index') }}',
                 },
-
                 columns: [{
+                        data: 'id',
+                        name: 'id',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, full, meta) {
+                            return `<input type="checkbox" class="row-checkbox" value="${data}">`;
+                        },
+                    },
+                    {
                         data: 'name',
                         name: 'name'
                     },
                     {
+                        data: 'photo',
+                        name: 'photo',
+                        className: "text-center",
+                    },
+                    {
                         data: 'supplier',
-                        name: 'supplier'
+                        name: 'supplier',
+                        orderable: false,
+                        className: "text-center",
+                    },
+                    {
+                        data: 'category',
+                        name: 'category',
+                        orderable: false,
+                        className: "text-center",
+                    },
+                    {
+                        data: 'unit',
+                        name: 'unit',
+                        className: "text-center",
                     },
                     {
                         data: 'status',
                         name: 'status',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at',
                         className: "text-center",
                     },
                     {
@@ -191,8 +230,8 @@
         }
 
         /* .sorting_disabled {
-                                background: purple !important ;
-                            } */
+                                                                    background: purple !important ;
+                                                                } */
         .card__header {
             display: flex;
             justify-content: space-between;

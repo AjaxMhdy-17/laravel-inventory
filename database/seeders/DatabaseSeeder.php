@@ -14,10 +14,17 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\User::factory(10)->create();
         $this->call([
-            CategorySeeder::class,
-            TagSeeder::class,
-            BlogPostSeeder::class,
+            SiteSettingSeeder::class , 
+            SupplierSeeder::class , 
+            CategoriesSeeder::class , 
+            CustomerSeeder::class , 
+            UnitSeeder::class , 
+            ProductSeeder::class
         ]);
+
+        //  CategorySeeder::class,
+        //     TagSeeder::class,
+        //     BlogPostSeeder::class,
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

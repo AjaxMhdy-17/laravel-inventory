@@ -53,16 +53,14 @@ class UnitController extends Controller
 
     public function create()
     {
-        $data['title'] = "Unit";
+        $data['title'] = "Unit Create";
         return view('backend.unit.create', $data);
     }
 
     public function store(UnitCategoryRequest $request)
     {
         $data = $request->validated();
-        if (isset($data['status'])) {
-            $data['status'] = $data['status'] == 'on' ? 1 : 0;
-        }
+        isset($data['status']) ?  $data['status'] = 1 : $data['status'] = 0;
         Unit::create($data);
         $notification = array(
             'message' => "Unit Added Successfully !",
@@ -75,7 +73,7 @@ class UnitController extends Controller
 
     public function edit(string $id)
     {
-        $data['title'] = "Unit";
+        $data['title'] = "Unit Edit";
         $data['unit'] = Unit::findOrFail($id);
         return view('backend.unit.edit', $data);
     }
@@ -84,10 +82,7 @@ class UnitController extends Controller
     public function update(UnitCategoryRequest $request, string $id)
     {
         $data = $request->validated();
-
-        if (isset($data['status'])) {
-            $data['status'] = $data['status'] == 'on' ? 1 : 0;
-        }
+        isset($data['status']) ?  $data['status'] = 1 : $data['status'] = 0;
         $unit = Unit::findOrFail($id);
         $unit->update($data);
         $notification = array(

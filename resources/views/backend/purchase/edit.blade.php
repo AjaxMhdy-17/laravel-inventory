@@ -10,7 +10,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>{{ $title }} Create</h1>
+                        <h1>{{ $title }}</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -30,14 +30,16 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <form class="card-body" action="{{ route('admin.product.all.store') }}" method="post"
+                                <form class="card-body"
+                                    action="{{ route('admin.product.update', ['product' => $product->id]) }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    @method('put')
                                     <div class="mb-3">
                                         <label>Name</label>
                                         <input type="text" name="name"
-                                            class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}"
-                                            placeholder="Name">
+                                            class="form-control @error('name') is-invalid @enderror"
+                                            value="{{ optional($product)->name }}" placeholder="Name">
                                         @error('name')
                                             <div class="error__msg">
                                                 {{ $message }}
@@ -86,7 +88,7 @@
                                                 <label>Quantity</label>
                                                 <input type="text" name="quantity"
                                                     class="form-control @error('quantity') is-invalid @enderror"
-                                                    value="{{old('quantity')}}" placeholder="Quantity">
+                                                    value="{{ optional($product)->quantity }}" placeholder="Quantity">
                                                 @error('quantity')
                                                     <div class="error__msg">
                                                         {{ $message }}
@@ -98,10 +100,8 @@
                                             <div class="mb-3 text-right">
                                                 <label>Status</label>
                                                 <div>
-                                                    {{-- <input type="checkbox" name="active"
-                                                        {{ $team->active == 1 ? 'checked' : '' }} data-toggle="toggle"
-                                                        data-size="sm" /> --}}
-                                                    <input type="checkbox" name="status" data-toggle="toggle"
+                                                    <input type="checkbox" name="status"
+                                                        {{ $product->status == 1 ? 'checked' : '' }} data-toggle="toggle"
                                                         data-size="sm" />
                                                 </div>
                                             </div>
@@ -114,12 +114,18 @@
                                             <div class="input-group">
                                                 <div class="custom-file">
                                                     <input type="file" name="photo" class="custom-file-input"
-                                                        id="sliderImageInput" value="{{old('photo')}}">
+                                                        id="sliderImageInput">
                                                     <label class="custom-file-label" for="sliderImageInput">Choose
                                                         file</label>
                                                 </div>
                                             </div>
                                         </div>
+                                        @if (!empty($product->photo))
+                                            <div class="mb-3 w__180" id="existingImageWrapper">
+                                                <img id="existingImage" class="img-fluid" src="{{ asset($product->photo) }}"
+                                                    alt="Existing Image">
+                                            </div>
+                                        @endif
                                         <div class="mb-3 w__180" id="imagePreviewWrapper" style="display: none;">
                                             <img id="uploadedImage" class="img-fluid" src=""
                                                 alt="New Image Preview">
@@ -139,6 +145,7 @@
             </div>
         </section>
     </div>
+
 @endsection
 
 
@@ -202,6 +209,30 @@
 
         $(function() {
             $('.select2').select2()
+        });
+    </script>
+@endpush
+
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $('#sliderImageInput').on('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#uploadedImage').attr('src', e.target.result);
+                        $('#imagePreviewWrapper').show();
+                        $('#existingImageWrapper').hide();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreviewWrapper').hide();
+                    $('#uploadedImage').attr('src', '');
+                    $('#existingImageWrapper').show();
+                }
+            });
         });
     </script>
 @endpush

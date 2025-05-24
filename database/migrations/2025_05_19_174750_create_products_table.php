@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
 
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('supplier_id');
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
             $table->unsignedBigInteger('unit_id');
@@ -23,6 +25,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('quantity')->nullable();
+            $table->string('photo')->nullable();
             $table->boolean('status')->default(0);
 
 

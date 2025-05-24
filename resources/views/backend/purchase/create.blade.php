@@ -30,14 +30,14 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <form class="card-body" action="{{ route('admin.product.all.store') }}" method="post"
+                                <form class="card-body" action="{{ route('admin.product.purchase.store') }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="mb-3">
                                         <label>Name</label>
                                         <input type="text" name="name"
-                                            class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}"
-                                            placeholder="Name">
+                                            class="form-control @error('name') is-invalid @enderror"
+                                            value="{{ old('name') }}" placeholder="Name">
                                         @error('name')
                                             <div class="error__msg">
                                                 {{ $message }}
@@ -47,7 +47,8 @@
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Supplier Name</label>
-                                            <select name='supplier_id' class="form-control select2" style="width: 100%;">
+                                            <select name='supplier_id' id='supplier_id' class="form-control select2"
+                                                style="width: 100%;">
                                                 @forelse ($suppliers as $supplier)
                                                     <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                                                 @empty
@@ -59,7 +60,8 @@
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Category Name</label>
-                                            <select name='category_id' class="form-control select2" style="width: 100%;">
+                                            <select name='category_id' id='category_id' class="form-control select2"
+                                                style="width: 100%;">
                                                 @forelse ($categories as $category)
                                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                                 @empty
@@ -86,7 +88,7 @@
                                                 <label>Quantity</label>
                                                 <input type="text" name="quantity"
                                                     class="form-control @error('quantity') is-invalid @enderror"
-                                                    value="{{old('quantity')}}" placeholder="Quantity">
+                                                    value="{{ old('quantity') }}" placeholder="Quantity">
                                                 @error('quantity')
                                                     <div class="error__msg">
                                                         {{ $message }}
@@ -114,7 +116,7 @@
                                             <div class="input-group">
                                                 <div class="custom-file">
                                                     <input type="file" name="photo" class="custom-file-input"
-                                                        id="sliderImageInput" value="{{old('photo')}}">
+                                                        id="sliderImageInput" value="{{ old('photo') }}">
                                                     <label class="custom-file-label" for="sliderImageInput">Choose
                                                         file</label>
                                                 </div>
@@ -202,6 +204,41 @@
 
         $(function() {
             $('.select2').select2()
+        });
+    </script>
+@endpush
+
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $('#supplier_id').on('change', function() {
+                var supplierId = $(this).val();
+
+                if (supplierId) {
+                    $.ajax({
+                        url: "{{ route('admin.product.purchase.getCategory') }}",
+                        type: "GET",
+                        data: {
+                            supplier_id: supplierId
+                        },
+                        success: function(data) {
+                            $('#category_id').empty();
+                            if (data.length > 0) {
+                                $.each(data, function(key, category) {
+                                    $('#category_id').append('<option value="' +
+                                        category.id + '">' + category.name +
+                                        '</option>');
+                                });
+                            } else {
+                                $('#category_id').append('<option>No Option Added</option>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#category_id').empty().append('<option>No Option Added</option>');
+                }
+            });
         });
     </script>
 @endpush

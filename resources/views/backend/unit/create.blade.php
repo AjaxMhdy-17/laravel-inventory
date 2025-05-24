@@ -44,23 +44,12 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label>Team Member Status</label>
+                                        <label>Status</label>
                                         <div>
                                             <input type="checkbox" name="status" 
                                                 data-toggle="toggle" data-size="sm">
                                         </div>
                                     </div>
-
-
-                                     {{-- <div class="mb-3">
-                                        <label>Team Member Status</label>
-                                        <div>
-                                            <input type="checkbox" name="active" {{ $team->active == 1 ? 'checked' : '' }}
-                                                data-toggle="toggle" data-size="sm">
-                                        </div>
-                                    </div> --}}
-
-
 
                                     <div class="mb-3">
                                         <button class="btn btn-success" type="submit">

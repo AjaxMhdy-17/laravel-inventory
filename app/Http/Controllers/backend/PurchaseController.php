@@ -3,27 +3,20 @@
 namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductRequest;
+use App\Models\Category;
 use App\Models\Product;
-use App\Services\ProductService;
-use App\Traits\HandlesImageUploads;
+use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
-class ProductController extends Controller
+class PurchaseController extends Controller
 {
 
-    use HandlesImageUploads;
-
-    public ProductService $productService;
-
-    public function __construct(ProductService $productService)
-    {
-        $this->productService = $productService;
+    public function getCategory(Request $request){
+        $id = $request->supplier_id ; 
+        dd($id) ; 
     }
-
-
 
     public function index(Request $request)
     {
@@ -61,11 +54,11 @@ class ProductController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.product.all.show', ['all' => $product->id]) . '">View</a>
+                                <a class="dropdown-item" href="' . route('admin.product.show', $product->id) . '">View</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="' . route('admin.product.all.edit', ['all' => $product->id]) . '">Edit</a>
+                                <a class="dropdown-item" href="' . route('admin.product.edit', $product->id) . '">Edit</a>
                                 <div class="dropdown-divider"></div>
-                                 <form class="delete-form" method="POST" action="' . route('admin.product.all.destroy', ['all' => $product->id]) . '">
+                                 <form class="delete-form" method="POST" action="' . route('admin.product.destroy', ['product' => $product->id]) . '">
                                     ' . csrf_field() . '
                                     ' . method_field("DELETE") . '
                                      <button type="submit" class="dropdown-item text-danger show-alert-delete-box">Delete</button>
@@ -78,37 +71,37 @@ class ProductController extends Controller
                 ->rawColumns(['action', 'status', 'photo', 'supplier', 'unit', 'category'])
                 ->make(true);
         }
-        $data['title'] = "Product";
-        return view('backend.product.list', $data);
+        $data['title'] = "Purchase";
+        return view('backend.purchase.list', $data);
     }
 
 
     public function show($id)
     {
-        $data['title'] = "Product Details";
-        $data['product'] = $this->productService->find($id);
-        return view('backend.product.view', $data);
+        $data['title'] = "Purchase Details";
+        // $data['product'] = $this->productService->find($id);
+        return view('backend.purchase.view', $data);
     }
 
 
     public function create()
     {
-        $data['title'] = "Product";
-        $data['suppliers'] = $this->productService->suppliers();
-        $data['categories'] =  $this->productService->categories();
-        $data['units'] = $this->productService->units();
-        return view('backend.product.create', $data);
+        $data['title'] = "Purchase";
+        $data['suppliers'] = Supplier::all();
+        $data['categories'] = Category::all();
+        $data['units'] = Category::all();
+        return view('backend.purchase.create', $data);
     }
 
-    public function store(ProductRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $this->productService->createProduct($data);
+        $data = $this->validateData($request);
+        // $this->productService->createProduct($data);
         $notification = array(
             'message' => "Product Updated Successfully !",
             'alert-type' => 'success'
         );
-        return redirect()->route('admin.product.all.index')->with($notification);
+        return redirect()->route('admin.product.index')->with($notification);
     }
 
 
@@ -116,34 +109,34 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         $data['title'] = "Product Edit";
-        $data['suppliers'] = $this->productService->suppliers();
-        $data['categories'] =  $this->productService->categories();
-        $data['units'] = $this->productService->units();
-        $data['product'] = $this->productService->find($id);
+        // $data['suppliers'] = $this->productService->suppliers();
+        // $data['categories'] =  $this->productService->categories();
+        // $data['units'] = $this->productService->units();
+        // $data['product'] = $this->productService->find($id);
         return view('backend.product.edit', $data);
     }
 
 
-    public function update(ProductRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
-        $product = $this->productService->find($id);
-        $data = $request->validated();
-        $this->productService->update($data, $id);
+        // $product = $this->productService->find($id);
+        $data = $this->validateData($request);
+        // $this->productService->update($data, $id);
         $notification = array(
             'message' => "Product Updated Successfully !",
             'alert-type' => 'success'
         );
-        return redirect()->route('admin.product.all.index')->with($notification);
+        return redirect()->route('admin.product.index')->with($notification);
     }
 
 
     public function destroy(string $id)
     {
-        $this->productService->delete($id);
+        // $this->productService->delete($id);
         $notification = array(
             'message' => "Product Deleted Successfully !",
             'alert-type' => 'success'
         );
-        return redirect()->route('admin.product.all.index')->with($notification);
+        return redirect()->route('admin.product.index')->with($notification);
     }
 }

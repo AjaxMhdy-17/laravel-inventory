@@ -45,7 +45,7 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label>Team Member Status</label>
+                                        <label>Status</label>
                                         <div>
                                             <input type="checkbox" name="status" {{ $unit->status == 1 ? 'checked' : '' }}
                                                 data-toggle="toggle" data-size="sm">
