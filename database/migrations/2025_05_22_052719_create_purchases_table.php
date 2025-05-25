@@ -21,14 +21,12 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
             $table->string('purchase_no');
-            $table->text('description');
+            $table->text('description')->nullable();
 
             $table->double('buying_qty');
             $table->double('unit_price');
             $table->double('buying_price');
-
             $table->boolean('status')->default('0')->comment("0 => pending , 1 => approved");
-
             $table->timestamps();
         });
     }

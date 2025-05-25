@@ -35,7 +35,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/cleanString.php"
+            "app/Helpers/cleanString.php",
+            "app/Helpers/randNumber.php"
         ]
     },
     "autoload-dev": {

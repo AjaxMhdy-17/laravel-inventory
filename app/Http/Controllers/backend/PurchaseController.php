@@ -13,11 +13,6 @@ use Yajra\DataTables\Facades\DataTables;
 class PurchaseController extends Controller
 {
 
-    public function getCategory(Request $request){
-        $id = $request->supplier_id ; 
-        dd($id) ; 
-    }
-
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -84,17 +79,48 @@ class PurchaseController extends Controller
     }
 
 
+
+    public function getCategory(Request $request)
+    {
+        $id = $request->supplier_id;
+        $supplier = Supplier::findOrFail($id);
+        return response()->json(
+            $supplier->categories->map(fn($cat) => [
+                'id' => $cat->id,
+                'name' => $cat->name
+            ])
+        );
+    }
+
+
+    public function getProduct(Request $request)
+    {
+        $category = Category::findOrFail($request->category_id);
+        return response()->json(
+            $category->product->map(fn($product) => [
+                'id' => $product->id,
+                'name' => $product->name
+            ])
+        );
+    }
+
+
+
     public function create()
     {
         $data['title'] = "Purchase";
         $data['suppliers'] = Supplier::all();
         $data['categories'] = Category::all();
-        $data['units'] = Category::all();
+        $data['products'] = Product::all();
+        $data['randNumber'] = randNumber();
         return view('backend.purchase.create', $data);
     }
 
     public function store(Request $request)
     {
+
+        dd($request->all()) ; 
+
         $data = $this->validateData($request);
         // $this->productService->createProduct($data);
         $notification = array(

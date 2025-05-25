@@ -36,17 +36,17 @@
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Supplier Name</label>
-                                            <select name="supplier_id" class="form-control select2" style="width: 100%;">
+                                            <select name="supplier_id[]" class="form-control select2" multiple
+                                                style="width: 100%;" required>
                                                 @forelse ($suppliers as $supplier)
                                                     <option value="{{ $supplier->id }}"
-                                                        {{ $category->suppliers->pluck('id')->first() == $supplier->id ? 'selected' : '' }}>
+                                                        {{ isset($category) && $category->suppliers->pluck('id')->contains($supplier->id) ? 'selected' : '' }}>
                                                         {{ $supplier->name }}
                                                     </option>
                                                 @empty
-                                                    <option>No Option Added</option>
+                                                    <option disabled>No Option Added</option>
                                                 @endforelse
                                             </select>
-
                                         </div>
                                     </div>
 
@@ -64,14 +64,13 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label>Team Member Status</label>
+                                        <label>Status</label>
                                         <div>
                                             <input type="checkbox" name="status"
                                                 {{ $category->status == 1 ? 'checked' : '' }} data-toggle="toggle"
                                                 data-size="sm">
                                         </div>
                                     </div>
-
 
                                     <div class="mb-3">
                                         <button class="btn btn-success" type="submit">
@@ -91,7 +90,13 @@
     </div>
 @endsection
 
+
 @push('css')
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('backend/assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('backend/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
         rel="stylesheet">
     <style>
@@ -101,6 +106,53 @@
     </style>
 @endpush
 
+@push('css')
+    <style>
+        .w__180 {
+            width: 180px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 40px !important;
+            line-height: 40px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 0;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+        }
+
+        .select2-selection__choice{
+            background: #007bff !important ; 
+        }
+
+        .select2-selection__choice__remove{
+            color : #fff !important; 
+        }
+
+    </style>
+@endpush
+
+
 @push('js')
+    <script src="{{ asset('backend/assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+@endpush
+
+
+@push('js')
+    <script>
+        $(function() {
+            $('.select2').select2({
+                tags: false, // prevents adding new options
+                placeholder: "Select supplier(s)",
+                allowClear: true
+            });
+        });
+    </script>
 @endpush

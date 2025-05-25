@@ -29,22 +29,11 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-
-                                <form class="card-body" action="{{ route('admin.product.purchase.store') }}" method="post"
+                                <form class="row" action="{{ route('admin.product.purchase.store') }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
-                                    <div class="mb-3">
-                                        <label>Name</label>
-                                        <input type="text" name="name"
-                                            class="form-control @error('name') is-invalid @enderror"
-                                            value="{{ old('name') }}" placeholder="Name">
-                                        @error('name')
-                                            <div class="error__msg">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    <div class="mb-3">
+
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Supplier Name</label>
                                             <select name='supplier_id' id='supplier_id' class="form-control select2"
@@ -57,89 +46,91 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
+
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Category Name</label>
-                                            <select name='category_id' id='category_id' class="form-control select2"
+                                            <select name="category_id" id="category_id" class="form-control"
                                                 style="width: 100%;">
-                                                @forelse ($categories as $category)
-                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                @empty
-                                                    <option>No Option Added</option>
-                                                @endforelse
+                                                @foreach ($categories as $category)
+                                                    <option value="{{ $category->id }}"
+                                                        {{ old('category_id', $defaultCategoryId ?? '') == $category->id ? 'selected' : '' }}>
+                                                        {{ $category->name }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
+
+                                    <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Unit Name</label>
-                                            <select name='unit_id' class="form-control select2" style="width: 100%;">
-                                                @forelse ($units as $unit)
-                                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                                                @empty
-                                                    <option>No Option Added</option>
-                                                @endforelse
+                                            <label>Product Name</label>
+                                            <select name="product_id" id="product_id" class="form-control"
+                                                style="width: 100%;">
+                                                <option>No Option Added</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="mb-3">
-                                                <label>Quantity</label>
-                                                <input type="text" name="quantity"
-                                                    class="form-control @error('quantity') is-invalid @enderror"
-                                                    value="{{ old('quantity') }}" placeholder="Quantity">
-                                                @error('quantity')
-                                                    <div class="error__msg">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
+
+                                    <div class="col-md-6 text-right mb-2">
+                                        <label>...</label>
+                                        <input type="text" hidden name="purchase_id"
+                                            class="form-control @error('purchase_id') is-invalid @enderror"
+                                            value="{{ $randNumber }}" placeholder="Purchase Id">
+                                        @error('purchase_id')
+                                            <div class="error__msg">
+                                                {{ $message }}
                                             </div>
+                                        @enderror
+                                        <div>
+                                            <button id="addMoreRow" class="btn btn-success" type="button">
+                                                Add More
+                                            </button>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="mb-3 text-right">
-                                                <label>Status</label>
-                                                <div>
-                                                    {{-- <input type="checkbox" name="active"
-                                                        {{ $team->active == 1 ? 'checked' : '' }} data-toggle="toggle"
-                                                        data-size="sm" /> --}}
-                                                    <input type="checkbox" name="status" data-toggle="toggle"
-                                                        data-size="sm" />
-                                                </div>
+                                    </div>
+
+
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body table-responsive p-0" style="height: 300px;">
+                                                <table class="table table-head-fixed text-nowrap" id="purchaseTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Category</th>
+                                                            <th>Product Name</th>
+                                                            <th>Unit</th>
+                                                            <th>Unit Price</th>
+                                                            <th style="width : 10%">Description</th>
+                                                            <th>Price</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="display:none;">
+                                                        <!-- Dynamic rows will be appended here -->
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="6" class="text-right">
+                                                                <input type="text" id="totalPrice" readonly
+                                                                    style="width : 200px ; padding-left : 5px ; "
+                                                                    placeholder="Total Price">
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <div class="form-group">
-                                            <label for="sliderImageInput">Photo</label>
-                                            <div class="input-group">
-                                                <div class="custom-file">
-                                                    <input type="file" name="photo" class="custom-file-input"
-                                                        id="sliderImageInput" value="{{ old('photo') }}">
-                                                    <label class="custom-file-label" for="sliderImageInput">Choose
-                                                        file</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3 w__180" id="imagePreviewWrapper" style="display: none;">
-                                            <img id="uploadedImage" class="img-fluid" src=""
-                                                alt="New Image Preview">
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <button class="btn btn-success" type="submit">
-                                            Save
-                                        </button>
-                                    </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+    </div>
+    </section>
     </div>
 @endsection
 
@@ -170,6 +161,10 @@
 
         .select2-container--default .select2-selection--single .select2-selection__arrow {
             height: 40px !important;
+        }
+
+        tr td {
+            border: 1px solid #ddd;
         }
     </style>
 @endpush
@@ -212,9 +207,8 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            $('#supplier_id').on('change', function() {
-                var supplierId = $(this).val();
-
+            function fetchCategories(supplierId, callback) {
+                $('#category_id').empty();
                 if (supplierId) {
                     $.ajax({
                         url: "{{ route('admin.product.purchase.getCategory') }}",
@@ -223,22 +217,156 @@
                             supplier_id: supplierId
                         },
                         success: function(data) {
-                            $('#category_id').empty();
                             if (data.length > 0) {
                                 $.each(data, function(key, category) {
                                     $('#category_id').append('<option value="' +
                                         category.id + '">' + category.name +
                                         '</option>');
                                 });
+                                if (typeof callback === "function") {
+                                    var firstCategoryId = $('#category_id option:first').val();
+                                    callback(firstCategoryId);
+                                }
                             } else {
                                 $('#category_id').append('<option>No Option Added</option>');
+                                $('#product_id').empty().append('<option>No Option Added</option>');
                             }
                         }
                     });
                 } else {
-                    $('#category_id').empty().append('<option>No Option Added</option>');
+                    $('#category_id').append('<option>No Option Added</option>');
+                    $('#product_id').empty().append('<option>No Option Added</option>');
+                }
+            }
+
+            function fetchProducts(categoryId) {
+                $('#product_id').empty();
+                if (categoryId) {
+                    $.ajax({
+                        url: "{{ route('admin.product.purchase.getProduct') }}",
+                        type: "GET",
+                        data: {
+                            category_id: categoryId
+                        },
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $.each(data, function(key, product) {
+                                    $('#product_id').append('<option value="' +
+                                        product.id + '">' + product.name +
+                                        '</option>');
+                                });
+                            } else {
+                                $('#product_id').append('<option>No Option Added</option>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#product_id').append('<option>No Option Added</option>');
+                }
+            }
+            var defaultSupplierId = $('#supplier_id').val();
+            fetchCategories(defaultSupplierId, fetchProducts);
+            $('#supplier_id').on('change', function() {
+                fetchCategories($(this).val(), fetchProducts);
+            });
+            $('#category_id').on('change', function() {
+                fetchProducts($(this).val());
+            });
+        });
+    </script>
+@endpush
+
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            // Existing code for select2 and chaining (your code here)...
+
+            // Utility: Get selected category/product names
+            function getSelectedCategoryName() {
+                return $('#category_id option:selected').text();
+            }
+
+            function getSelectedProductName() {
+                return $('#product_id option:selected').text();
+            }
+
+            // Utility: Calculate total price
+            function updateTotalPrice() {
+                let total = 0;
+                $('#purchaseTable tbody tr').each(function() {
+                    let price = parseFloat($(this).find('.rowPrice').val()) || 0;
+                    total += price;
+                });
+                $('#totalPrice').val(total.toFixed(2));
+            }
+
+            // Utility: Calculate row price
+            function calculateRowPrice($row) {
+                let unit = parseFloat($row.find('.unit').val()) || 0;
+                let unitPrice = parseFloat($row.find('.unitPrice').val()) || 0;
+                let price = unit * unitPrice;
+                $row.find('.rowPrice').val(price.toFixed(2));
+                updateTotalPrice();
+            }
+
+            // Add More Button Click
+            $('#addMoreRow').on('click', function() {
+                // Show tbody if hidden
+                $('#purchaseTable tbody').show();
+
+                // Get selected values/texts
+                let categoryName = getSelectedCategoryName();
+                let productName = getSelectedProductName();
+
+                // Build the row
+                let row = `
+            <tr>
+                <td>
+                    <input type="text" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
+                </td>
+                <td>
+                    <input type="text" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
+                </td>
+                <td>
+                    <input type="number" min="0" class="form-control unit" style="width:100px;" placeholder="Unit">
+                </td>
+                <td>
+                    <input type="number" min="0" class="form-control unitPrice" style="width:80px;" placeholder="Unit Price">
+                </td>
+                <td>
+                    <input type="text" class="form-control" style="width:180px;" placeholder="Description">
+                </td>
+                <td>
+                    <input type="text" class="form-control rowPrice" style="width:120px;" readonly value="0.00">
+                </td>
+                <td class="text-right">
+                    <button class="btn btn-warning btnRemoveRow" type="button">x</button>
+                </td>
+            </tr>
+        `;
+                $('#purchaseTable tbody').append(row);
+                updateTotalPrice();
+            });
+
+            // Listen for changes in unit or unit price in any row
+            $('#purchaseTable').on('input', '.unit, .unitPrice', function() {
+                let $row = $(this).closest('tr');
+                calculateRowPrice($row);
+            });
+
+            // Remove row
+            $('#purchaseTable').on('click', '.btnRemoveRow', function() {
+                $(this).closest('tr').remove();
+                updateTotalPrice();
+                // Hide tbody if no rows left
+                if ($('#purchaseTable tbody tr').length === 0) {
+                    $('#purchaseTable tbody').hide();
                 }
             });
+
+            // Optional: Reset total if page is reloaded
+            updateTotalPrice();
         });
     </script>
 @endpush

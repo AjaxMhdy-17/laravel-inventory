@@ -95,8 +95,8 @@ class CategoryController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $data = $this->validateData($request);
 
+        $data = $this->validateData($request);
         isset($data['status']) ?  $data['status'] = 1 : $data['status'] = 0;
         $supplierId = $data['supplier_id'];
         unset($data['supplier_id']);

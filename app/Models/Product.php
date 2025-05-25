@@ -11,7 +11,7 @@ class Product extends Model
     protected $fillable = ['user_id', 'supplier_id', 'unit_id', 'category_id', 'name', 'quantity', 'photo', 'status'];
 
 
-    public function supplier()
+    public function suppliers()
     {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }

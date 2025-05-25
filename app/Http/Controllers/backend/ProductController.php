@@ -34,9 +34,8 @@ class ProductController extends Controller
                     $imageUrl = isset($product->photo) ? asset($product->photo) : asset('backend/assets/dist/img/avatar5.png');
                     return '<img src="' . $imageUrl . '" alt="Photo" width="50" height="50">';
                 })
-                ->addColumn('supplier', function ($product) {
-                    $supplierName = optional($product->supplier)->name ?? 'N/A';
-                    return "<span>{$supplierName}</span>";
+                ->addColumn('supplier', function ($category) {
+                    return $category->suppliers->name ; 
                 })
                 ->addColumn('category', function ($product) {
                     $categoryName = optional($product->category)->name ?? 'N/A';
@@ -49,7 +48,6 @@ class ProductController extends Controller
                 ->addColumn('created_at', function ($product) {
                     return Carbon::parse($product->created_at)->format('Y-m-d');
                 })
-
                 ->addColumn('status', function ($product) {
                     return $product->status == 1 ? "<span class='badge badge-primary'>Active</span>" : " <span class='badge badge-danger'>In Active</span>";
                 })

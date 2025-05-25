@@ -36,20 +36,26 @@
                                     <div class="mb-3">
                                         <label>Name</label>
                                         <input type="text" name="name"
-                                            class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}"
-                                            placeholder="Name">
+                                            class="form-control @error('name') is-invalid @enderror"
+                                            value="{{ old('name') }}" placeholder="Name">
                                         @error('name')
                                             <div class="error__msg">
                                                 {{ $message }}
                                             </div>
                                         @enderror
                                     </div>
+
+
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Supplier Name</label>
-                                            <select name='supplier_id' class="form-control select2" style="width: 100%;">
+                                            <select name="supplier_id" id="supplier_id" class="form-control select2"
+                                                style="width: 100%;" required>
                                                 @forelse ($suppliers as $supplier)
-                                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                                    <option value="{{ $supplier->id }}"
+                                                        {{ old('supplier_id', $defaultSupplierId ?? '') == $supplier->id ? 'selected' : '' }}>
+                                                        {{ $supplier->name }}
+                                                    </option>
                                                 @empty
                                                     <option>No Option Added</option>
                                                 @endforelse
@@ -59,15 +65,13 @@
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Category Name</label>
-                                            <select name='category_id' class="form-control select2" style="width: 100%;">
-                                                @forelse ($categories as $category)
-                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                @empty
-                                                    <option>No Option Added</option>
-                                                @endforelse
+                                            <select name="category_id" id="category_id" class="form-control"
+                                                style="width: 100%;" required>
+                                                <option>No Option Added</option>
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Unit Name</label>
@@ -86,7 +90,7 @@
                                                 <label>Quantity</label>
                                                 <input type="text" name="quantity"
                                                     class="form-control @error('quantity') is-invalid @enderror"
-                                                    value="{{old('quantity')}}" placeholder="Quantity">
+                                                    value="{{ old('quantity') }}" placeholder="Quantity">
                                                 @error('quantity')
                                                     <div class="error__msg">
                                                         {{ $message }}
@@ -98,9 +102,6 @@
                                             <div class="mb-3 text-right">
                                                 <label>Status</label>
                                                 <div>
-                                                    {{-- <input type="checkbox" name="active"
-                                                        {{ $team->active == 1 ? 'checked' : '' }} data-toggle="toggle"
-                                                        data-size="sm" /> --}}
                                                     <input type="checkbox" name="status" data-toggle="toggle"
                                                         data-size="sm" />
                                                 </div>
@@ -114,7 +115,7 @@
                                             <div class="input-group">
                                                 <div class="custom-file">
                                                     <input type="file" name="photo" class="custom-file-input"
-                                                        id="sliderImageInput" value="{{old('photo')}}">
+                                                        id="sliderImageInput" value="{{ old('photo') }}">
                                                     <label class="custom-file-label" for="sliderImageInput">Choose
                                                         file</label>
                                                 </div>
@@ -202,6 +203,71 @@
 
         $(function() {
             $('.select2').select2()
+        });
+    </script>
+@endpush
+
+
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2();
+
+            // Fetch categories for a supplier, then call callback (e.g., fetch products)
+            function fetchCategories(supplierId, callback) {
+                $('#category_id').empty();
+                if (supplierId) {
+                    $.ajax({
+                        url: "{{ route('admin.product.purchase.getCategory') }}",
+                        type: "GET",
+                        data: {
+                            supplier_id: supplierId
+                        },
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $.each(data, function(key, category) {
+                                    $('#category_id').append('<option value="' +
+                                        category.id + '">' + category.name +
+                                        '</option>');
+                                });
+                                if (typeof callback === "function") {
+                                    // Pass the first category id to the callback
+                                    var firstCategoryId = $('#category_id option:first').val();
+                                    callback(firstCategoryId);
+                                }
+                            } else {
+                                $('#category_id').append('<option>No Option Added</option>');
+                                // If you have a product select, clear it too:
+                                $('#product_id').empty().append('<option>No Option Added</option>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#category_id').append('<option>No Option Added</option>');
+                    $('#product_id').empty().append('<option>No Option Added</option>');
+                }
+            }
+
+            // Example fetchProducts function stub (implement if you have a product select)
+            function fetchProducts(categoryId) {
+                // You can implement product fetching logic here if needed
+            }
+
+            // On page load: fetch categories for default supplier, then fetch products for first category
+            var defaultSupplierId = $('#supplier_id').val();
+            fetchCategories(defaultSupplierId, fetchProducts);
+
+            // When supplier changes: fetch categories, then fetch products for first category
+            $('#supplier_id').on('change', function() {
+                fetchCategories($(this).val(), fetchProducts);
+            });
+
+            // If you want to fetch products when category changes, add:
+            // $('#category_id').on('change', function() {
+            //     fetchProducts($(this).val());
+            // });
         });
     </script>
 @endpush
