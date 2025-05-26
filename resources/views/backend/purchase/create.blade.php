@@ -92,21 +92,152 @@
 
                                     <div class="col-12">
                                         <div class="card">
-                                            <div class="card-body table-responsive p-0" style="height: 300px;">
+                                            <div class="card-body table-responsive p-0" style="max-height: 300px;">
                                                 <table class="table table-head-fixed text-nowrap" id="purchaseTable">
                                                     <thead>
                                                         <tr>
                                                             <th>Category</th>
                                                             <th>Product Name</th>
-                                                            <th>Unit</th>
+                                                            <th>PSC/KG</th>
                                                             <th>Unit Price</th>
                                                             <th style="width : 10%">Description</th>
                                                             <th>Price</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody style="display:none;">
-                                                        <!-- Dynamic rows will be appended here -->
+                                                    <tbody @if (!old('purchase_items')) style="display:none;" @endif>
+                                                        @php
+                                                            $purchaseItems = old('purchase_items', []);
+                                                        @endphp
+                                                        @foreach ($purchaseItems as $i => $item)
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="hidden"
+                                                                        name="purchase_items[{{ $i }}][supplier_id]"
+                                                                        value="{{ $item['supplier_id'] ?? '' }}">
+                                                                    <input type="hidden"
+                                                                        name="purchase_items[{{ $i }}][supplier]"
+                                                                        value="{{ $item['supplier'] ?? '' }}">
+                                                                    <input type="hidden"
+                                                                        name="purchase_items[{{ $i }}][category_id]"
+                                                                        value="{{ $item['category_id'] ?? '' }}">
+                                                                    <input type="text"
+                                                                        name="purchase_items[{{ $i }}][category]"
+                                                                        class="form-control-plaintext" readonly
+                                                                        value="{{ $item['category'] ?? '' }}"
+                                                                        style="width:120px;">
+                                                                    @error("purchase_items.$i.category")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+
+                                                                <td>
+                                                                    <input type="hidden"
+                                                                        name="purchase_items[{{ $i }}][supplier_id]"
+                                                                        value="{{ $item['supplier_id'] ?? '' }}">
+                                                                    <input type="hidden"
+                                                                        name="purchase_items[{{ $i }}][category_id]"
+                                                                        value="{{ $item['category_id'] ?? '' }}">
+                                                                    <input type="text"
+                                                                        name="purchase_items[{{ $i }}][category]"
+                                                                        class="form-control-plaintext" readonly
+                                                                        value="{{ $item['category'] ?? '' }}"
+                                                                        style="width:120px;">
+                                                                    @error("purchase_items.$i.category")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden"
+                                                                        name="purchase_items[{{ $i }}][product_id]"
+                                                                        value="{{ $item['product_id'] ?? '' }}">
+                                                                    <input type="text"
+                                                                        name="purchase_items[{{ $i }}][product]"
+                                                                        class="form-control-plaintext" readonly
+                                                                        value="{{ $item['product'] ?? '' }}"
+                                                                        style="width:160px;">
+                                                                    @error("purchase_items.$i.product")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+                                                                <td>
+                                                                    <input type="hidden"
+                                                                        name="purchase_items[{{ $i }}][product_id]"
+                                                                        value="{{ $item['product_id'] ?? '' }}">
+                                                                    <input type="text"
+                                                                        name="purchase_items[{{ $i }}][product]"
+                                                                        class="form-control-plaintext" readonly
+                                                                        value="{{ $item['product'] ?? '' }}"
+                                                                        style="width:160px;">
+                                                                    @error("purchase_items.$i.product")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+
+                                                                <td>
+                                                                    <input type="text"
+                                                                        name="purchase_items[{{ $i }}][product]"
+                                                                        class="form-control-plaintext" readonly
+                                                                        value="{{ $item['product'] ?? '' }}"
+                                                                        style="width:160px;">
+                                                                    @error("purchase_items.$i.product")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" min="0"
+                                                                        name="purchase_items[{{ $i }}][unit]"
+                                                                        class="form-control unit" style="width:100px;"
+                                                                        value="{{ $item['unit'] ?? '' }}"
+                                                                        placeholder="Unit">
+                                                                    @error("purchase_items.$i.unit")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" min="0"
+                                                                        name="purchase_items[{{ $i }}][unit_price]"
+                                                                        class="form-control unitPrice" style="width:80px;"
+                                                                        value="{{ $item['unit_price'] ?? '' }}"
+                                                                        placeholder="Unit Price">
+                                                                    @error("purchase_items.$i.unit_price")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text"
+                                                                        name="purchase_items[{{ $i }}][description]"
+                                                                        class="form-control" style="width:180px;"
+                                                                        value="{{ $item['description'] ?? '' }}"
+                                                                        placeholder="Description">
+                                                                    @error("purchase_items.$i.description")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text"
+                                                                        name="purchase_items[{{ $i }}][price]"
+                                                                        class="form-control rowPrice" style="width:120px;"
+                                                                        readonly value="{{ $item['price'] ?? '0.00' }}">
+                                                                    @error("purchase_items.$i.price")
+                                                                        <div class="text-danger small">{{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </td>
+                                                                <td class="text-right">
+                                                                    <button class="btn btn-warning btnRemoveRow"
+                                                                        type="button">x</button>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
@@ -123,6 +254,11 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-info">
+                                            Add Store
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -280,9 +416,12 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            // Existing code for select2 and chaining (your code here)...
+            let rowIndex = 0;
 
-            // Utility: Get selected category/product names
+            function getSelectedSupplierId() {
+                return $('#supplier_id').val();
+            }
+
             function getSelectedCategoryName() {
                 return $('#category_id option:selected').text();
             }
@@ -291,7 +430,6 @@
                 return $('#product_id option:selected').text();
             }
 
-            // Utility: Calculate total price
             function updateTotalPrice() {
                 let total = 0;
                 $('#purchaseTable tbody tr').each(function() {
@@ -301,7 +439,6 @@
                 $('#totalPrice').val(total.toFixed(2));
             }
 
-            // Utility: Calculate row price
             function calculateRowPrice($row) {
                 let unit = parseFloat($row.find('.unit').val()) || 0;
                 let unitPrice = parseFloat($row.find('.unitPrice').val()) || 0;
@@ -310,62 +447,66 @@
                 updateTotalPrice();
             }
 
-            // Add More Button Click
             $('#addMoreRow').on('click', function() {
-                // Show tbody if hidden
                 $('#purchaseTable tbody').show();
 
-                // Get selected values/texts
+                let supplierId = getSelectedSupplierId();
+                let supplierName = $('#supplier_id option:selected').text();
+                let categoryId = $('#category_id').val();
                 let categoryName = getSelectedCategoryName();
+                let productId = $('#product_id').val();
                 let productName = getSelectedProductName();
 
-                // Build the row
                 let row = `
-            <tr>
-                <td>
-                    <input type="text" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
-                </td>
-                <td>
-                    <input type="text" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
-                </td>
-                <td>
-                    <input type="number" min="0" class="form-control unit" style="width:100px;" placeholder="Unit">
-                </td>
-                <td>
-                    <input type="number" min="0" class="form-control unitPrice" style="width:80px;" placeholder="Unit Price">
-                </td>
-                <td>
-                    <input type="text" class="form-control" style="width:180px;" placeholder="Description">
-                </td>
-                <td>
-                    <input type="text" class="form-control rowPrice" style="width:120px;" readonly value="0.00">
-                </td>
-                <td class="text-right">
-                    <button class="btn btn-warning btnRemoveRow" type="button">x</button>
-                </td>
-            </tr>
-        `;
+                    <tr>
+                        <td>
+                            <input type="hidden" name="purchase_items[${rowIndex}][supplier_id]" class="supplier_id" value="${supplierId}">
+                            <input type="hidden" name="purchase_items[${rowIndex}][supplier]" value="${supplierName}">
+                            <input type="hidden" name="purchase_items[${rowIndex}][category_id]" value="${categoryId}">
+                            <input type="text" name="purchase_items[${rowIndex}][category]" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
+                        </td>
+                        <td>
+                            <input type="hidden" name="purchase_items[${rowIndex}][product_id]" value="${productId}">
+                            <input type="text" name="purchase_items[${rowIndex}][product]" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
+                        </td>
+                        <td>
+                            <input type="number" min="0" name="purchase_items[${rowIndex}][unit]" class="form-control unit" style="width:100px;" placeholder="Unit">
+                        </td>
+                        <td>
+                            <input type="number" min="0" name="purchase_items[${rowIndex}][unit_price]" class="form-control unitPrice" style="width:80px;" placeholder="Unit Price">
+                        </td>
+                        <td>
+                            <input type="text" name="purchase_items[${rowIndex}][description]" class="form-control" style="width:180px;" placeholder="Description">
+                        </td>
+                        <td>
+                            <input type="text" name="purchase_items[${rowIndex}][price]" class="form-control rowPrice" style="width:120px;" readonly value="0.00">
+                        </td>
+                        <td class="text-right">
+                            <button class="btn btn-warning btnRemoveRow" type="button">x</button>
+                        </td>
+                    </tr>
+                `;
                 $('#purchaseTable tbody').append(row);
+                rowIndex++;
                 updateTotalPrice();
             });
 
-            // Listen for changes in unit or unit price in any row
+
+
+
             $('#purchaseTable').on('input', '.unit, .unitPrice', function() {
                 let $row = $(this).closest('tr');
                 calculateRowPrice($row);
             });
 
-            // Remove row
             $('#purchaseTable').on('click', '.btnRemoveRow', function() {
                 $(this).closest('tr').remove();
                 updateTotalPrice();
-                // Hide tbody if no rows left
                 if ($('#purchaseTable tbody tr').length === 0) {
                     $('#purchaseTable tbody').hide();
                 }
             });
 
-            // Optional: Reset total if page is reloaded
             updateTotalPrice();
         });
     </script>

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\backend;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Purchase;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class PurchaseController extends Controller
@@ -118,15 +120,60 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
+        $data = $request->validate([
+            'purchase_items' => 'required|array|min:1',
+            'purchase_items.*.supplier_id' => 'required|exists:suppliers,id',
+            'purchase_items.*.product_id' => 'required|exists:products,id',
+            'purchase_items.*.category_id' => 'required|exists:categories,id',
+            'purchase_items.*.supplier' => 'required|string',
+            'purchase_items.*.category' => 'required|string',
+            'purchase_items.*.product' => 'required|string',
+            'purchase_items.*.unit' => 'required|numeric|min:1',
+            'purchase_items.*.unit_price' => 'required|numeric|min:0',
+            'purchase_items.*.price' => 'required|numeric|min:0',
+            'purchase_items.*.description' => 'nullable|string',
+        ], [
+            'purchase_items.required' => 'You must add at least one purchase item.',
+            'purchase_items.*.supplier_id.required' => 'required.',
+            'purchase_items.*.category_id.exists' => 'Invalid category selected.',
+            'purchase_items.*.product_id.exists' => 'Invalid product selected.',
+            'purchase_items.*.category.required' => 'required.',
+            'purchase_items.*.product.required' => 'required.',
+            'purchase_items.*.supplier.required' => 'required.',
+            'purchase_items.*.unit.required' => 'required.',
+            'purchase_items.*.unit_price.required' => 'required.',
+            'purchase_items.*.price.required' => 'required.',
+            // Description is nullable, so no required message needed
+        ]);
 
-        dd($request->all()) ; 
 
-        $data = $this->validateData($request);
-        // $this->productService->createProduct($data);
+
+        foreach ($data['purchase_items'] as $idx => $item) {
+
+            $purchase = [
+                'user_id' => Auth::user()->id,
+                'product_id' => $item['product_id'],
+                'category_id' =>  $item['category_id'],
+                'supplier_id' =>  $item['supplier_id'],
+                'supplier' => $item['supplier'],
+                'category' =>  $item['category'],
+                'product' =>  $item['product'],
+                'purchase_no' => randNumber(),
+                'description' =>  $item['description'],
+                'buying_qty' =>  $item['unit'],
+                'unit_price' => $item['unit_price'],
+                'price' =>  $item['price'],
+
+            ];
+            Purchase::create($purchase);
+        }
+
+
         $notification = array(
-            'message' => "Product Updated Successfully !",
+            'message' => "Purchase Added Successfully !",
             'alert-type' => 'success'
         );
+        return back();
         return redirect()->route('admin.product.index')->with($notification);
     }
 

@@ -48,7 +48,7 @@
                                                 </div>
                                                 <div class="">
                                                     <label for="">Product supplier : </label>
-                                                    <p class=""> {{ $product->supplier->name }}</p>
+                                                    <p class=""> {{ $product->suppliers->name }}</p>
                                                 </div>
                                                 <div class="">
                                                     <label for="">Product Category : </label>
@@ -61,7 +61,7 @@
                                                 <div>
                                                     <label for="">Product Photo : </label>
                                                     <p class="">
-                                                        <img src="{{ asset($product->photo) }}"
+                                                        <img src="{{ isset($product->photo) ? asset($product->photo) : asset('backend/assets/dist/img/avatar5.png') }}"
                                                             style="height: 120px ; width : 120px ; object-fit : cover"
                                                             alt="">
                                                     </p>
@@ -86,7 +86,7 @@
                                                 </div>
                                                 <div>
                                                     <label for="">Product Quantity : </label>
-                                                    <span class="badge badge-info">{{$product->quantity}}</span>
+                                                    <span class="badge badge-info">{{ $product->quantity }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -112,6 +112,7 @@
         th.sorting_disabled::after {
             content: "" !important;
         }
+
         .card__header {
             display: flex;
             justify-content: space-between;
