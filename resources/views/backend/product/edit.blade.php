@@ -46,30 +46,35 @@
                                             </div>
                                         @enderror
                                     </div>
+
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Supplier Name</label>
-                                            <select name='supplier_id' class="form-control select2" style="width: 100%;">
-                                                @forelse ($suppliers as $supplier)
-                                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                                @empty
-                                                    <option>No Option Added</option>
-                                                @endforelse
+                                            <select name="supplier_id" id="supplier_id" class="form-control select2"
+                                                style="width: 100%;">
+                                                @foreach ($suppliers as $supplier)
+                                                    <option value="{{ $supplier->id }}"
+                                                        {{ old('supplier_id', $selectedSupplierId ?? '') == $supplier->id ? 'selected' : '' }}>
+                                                        {{ $supplier->name }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Category Name</label>
-                                            <select name='category_id' class="form-control select2" style="width: 100%;">
-                                                @forelse ($categories as $category)
-                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                                @empty
-                                                    <option>No Option Added</option>
-                                                @endforelse
+                                            <select name="category_id" id="category_id" class="form-control select2"
+                                                style="width: 100%;">
+                                                <!-- Options will be loaded by AJAX -->
                                             </select>
                                         </div>
                                     </div>
+
+
+
+
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Unit Name</label>
@@ -122,8 +127,8 @@
                                         </div>
                                         @if (!empty($product->photo))
                                             <div class="mb-3 w__180" id="existingImageWrapper">
-                                                <img id="existingImage" class="img-fluid" src="{{ asset($product->photo) }}"
-                                                    alt="Existing Image">
+                                                <img id="existingImage" class="img-fluid"
+                                                    src="{{ asset($product->photo) }}" alt="Existing Image">
                                             </div>
                                         @endif
                                         <div class="mb-3 w__180" id="imagePreviewWrapper" style="display: none;">
@@ -211,10 +216,7 @@
             $('.select2').select2()
         });
     </script>
-@endpush
 
-
-@push('js')
     <script>
         $(document).ready(function() {
             $('#sliderImageInput').on('change', function(event) {
@@ -232,6 +234,61 @@
                     $('#uploadedImage').attr('src', '');
                     $('#existingImageWrapper').show();
                 }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+
+            var selectedCategoryId = '{{ old('category_id', $selectedCategoryId ?? '') }}';
+
+            function fetchCategories(supplierId, callback) {
+                $('#category_id').empty();
+                if (supplierId) {
+                    $.ajax({
+                        url: "{{ route('admin.product.purchase.getCategory') }}",
+                        type: "GET",
+                        data: {
+                            supplier_id: supplierId
+                        },
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $.each(data, function(key, category) {
+                                    var selected = (category.id == selectedCategoryId) ?
+                                        'selected' : '';
+                                    $('#category_id').append('<option value="' +
+                                        category.id + '" ' + selected + '>' + category
+                                        .name +
+                                        '</option>');
+                                });
+                                if (typeof callback === "function") {
+
+                                    var catId = selectedCategoryId || $('#category_id option:first')
+                                        .val();
+                                    callback(catId);
+                                }
+                            } else {
+                                $('#category_id').append('<option>No Option Added</option>');
+                                $('#product_id').empty().append('<option>No Option Added</option>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#category_id').append('<option>No Option Added</option>');
+                    $('#product_id').empty().append('<option>No Option Added</option>');
+                }
+            }
+
+            function fetchProducts(categoryId) {
+                // Implement if you want to fetch products according to category
+            }
+            var defaultSupplierId = $('#supplier_id').val();
+            fetchCategories(defaultSupplierId, fetchProducts);
+            $('#supplier_id').on('change', function() {
+                selectedCategoryId = '';
+                fetchCategories($(this).val(), fetchProducts);
             });
         });
     </script>

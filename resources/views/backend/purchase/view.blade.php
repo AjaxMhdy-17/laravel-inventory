@@ -29,7 +29,7 @@
                             <div class="card__header">
                                 <h3 class="card-title">{{ $title }}</h3>
                                 <div>
-                                    <a href="{{ route('admin.product.index') }}" class="btn btn-info">Back</a>
+                                    <a href="{{ route('admin.product.purchase.index') }}" class="btn btn-info">Back</a>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -43,35 +43,41 @@
                                         <div class="col-md-8">
                                             <div class="card-body">
                                                 <div class="">
+                                                    <label for="">Product Suppler Name : </label>
+                                                    <span class=""> {{ $purchase->supplier }}</span>
+                                                </div>
+                                                <div class="">
+                                                    <label for="">Product Category Name : </label>
+                                                    <span class=""> {{ $purchase->category }}</span>
+                                                </div>
+                                                <div class="">
                                                     <label for="">Product Name : </label>
-                                                    <p class=""> {{ $product->name }}</p>
+                                                    <span class=""> {{ $purchase->product }}</span>
                                                 </div>
                                                 <div class="">
-                                                    <label for="">Product supplier : </label>
-                                                    <p class=""> {{ $product->supplier->name }}</p>
+                                                    <label for="">Product Description : </label>
+                                                    <span class=""> {{ $purchase->description }}</span>
                                                 </div>
                                                 <div class="">
-                                                    <label for="">Product Category : </label>
-                                                    <p class=""> {{ $product->category->name }}</p>
+                                                    <label for="">Product Buying Quantity : </label>
+                                                    <span class=""> {{ $purchase->buying_qty }}</span>
                                                 </div>
+
                                                 <div class="">
-                                                    <label for="">Product Unit : </label>
-                                                    <p class=""> {{ $product->unit->name }}</p>
+                                                    <label for="">Product Unit Price : </label>
+                                                    <span class=""> {{ $purchase->unit_price }}</span>
                                                 </div>
-                                                <div>
-                                                    <label for="">Product Photo : </label>
-                                                    <p class="">
-                                                        <img src="{{ asset($product->photo) }}"
-                                                            style="height: 120px ; width : 120px ; object-fit : cover"
-                                                            alt="">
-                                                    </p>
+
+                                                <div class="">
+                                                    <label for="">Product Total Price : </label>
+                                                    <span class=""> {{ $purchase->price }}</span>
                                                 </div>
                                                 <div>
                                                     <label for="">Product Added by : </label>
-                                                    <p class=""> {{ $product->user->name }}</p>
+                                                    <span class=""> {{ $purchase->user->name }}</span>
                                                 </div>
                                                 <div>
-                                                    <a href="{{ route('admin.product.index') }}"
+                                                    <a href="{{ route('admin.product.all.index') }}"
                                                         class="btn btn-info">Back</a>
                                                 </div>
                                             </div>
@@ -80,13 +86,24 @@
                                             <div class="card-body">
                                                 <div>
                                                     <label for="">Product Status : </label>
-                                                    {!! $product->status
-                                                        ? '<span class="badge badge-primary">Active</span>'
-                                                        : '<span class="badge badge-danger">In Active</span>' !!}
+                                                    {!! $purchase->status
+                                                        ? '<span class="badge badge-primary">Approved</span>'
+                                                        : '<span class="badge badge-danger">Pending</span>' !!}
                                                 </div>
-                                                <div>
-                                                    <label for="">Product Quantity : </label>
-                                                    <span class="badge badge-info">{{$product->quantity}}</span>
+                                                <div class="">
+                                                   
+                                                    <form
+                                                        action="{{ route('admin.product.purchase.status', ['status' => $purchase->id]) }}"
+                                                        method="post">
+                                                        @csrf
+
+                                                        {!! $purchase->status == 1
+                                                            ? '<button class="btn btn-danger">Confirm Not Approved</button>'
+                                                            : '<button class="btn btn-warning">Confirm Approve</button>' !!}
+
+
+                                                    </form>
+                                                    {{-- <span class="badge badge-info">{{ }}</span> --}}
                                                 </div>
                                             </div>
                                         </div>
@@ -105,122 +122,6 @@
 
 @include('backend.main.dataTableLibs')
 
-@push('js')
-    <script>
-        $(document).ready(function() {
-            $('.myDatatable').DataTable({
-                serverSide: true,
-                processing: true,
-                responsive: true,
-                ajax: {
-                    url: '{{ route('admin.product.index') }}',
-                },
-                columns: [{
-                        data: 'id',
-                        name: 'id',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, full, meta) {
-                            return `<input type="checkbox" class="row-checkbox" value="${data}">`;
-                        },
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'photo',
-                        name: 'photo',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'supplier',
-                        name: 'supplier',
-                        orderable: false,
-                        className: "text-center",
-                    },
-                    {
-                        data: 'category',
-                        name: 'category',
-                        orderable: false,
-                        className: "text-center",
-                    },
-                    {
-                        data: 'unit',
-                        name: 'unit',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'status',
-                        name: 'status',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        className: "text-right",
-                        orderable: false,
-                        searchable: false
-                    }
-                ]
-            });
-
-            $(document).on('change', '.row-checkbox, #select-all', function() {
-                const selected = $('.row-checkbox:checked').length;
-                $('#bulk-delete').toggleClass('d-none', selected === 0);
-            });
-
-            $(document).on('change', '#select-all', function() {
-                $('.row-checkbox').prop('checked', this.checked).trigger('change');
-            });
-
-            // SweetAlert on delete click
-            $(document).on('click', '.show-alert-delete-box', function(event) {
-                event.preventDefault();
-                const form = $(this).closest("form");
-                const selectedIds = $('.row-checkbox:checked').map(function() {
-                    return $(this).val();
-                }).get();
-
-                if (selectedIds.length === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No rows selected',
-                        text: 'Please select at least one row to delete.',
-                    });
-                    return;
-                }
-                $('#bulk-delete-ids').val(selectedIds.join(','));
-            });
-
-        });
-    </script>
-
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(document).on('click', '.show-alert-delete-box', function(event) {
-                event.preventDefault();
-                var form = $(this).closest("form");
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "Do you really want to delete this item?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Yes, delete it!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
-@endpush
-
-
 
 @push('css')
     <style>
@@ -229,9 +130,6 @@
             content: "" !important;
         }
 
-        /* .sorting_disabled {
-                                                                    background: purple !important ;
-                                                                } */
         .card__header {
             display: flex;
             justify-content: space-between;

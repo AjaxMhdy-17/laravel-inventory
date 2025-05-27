@@ -62,13 +62,14 @@
                                                     style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            <th class="sorting_disabled"><input type="checkbox"
-                                                                    id="select-all"></th>
-                                                            <th>Name</th>
-                                                            <th>Photo</th>
+                                                            {{-- <th class="sorting_disabled"><input type="checkbox"
+                                                                    id="select-all"></th> --}}
                                                             <th>Supplier</th>
                                                             <th>Category</th>
-                                                            <th>Unit</th>
+                                                            <th>Product</th>
+                                                            <th>Quantity</th>
+                                                            <th>Unit Price</th>
+                                                            <th>Total Price</th>
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -99,31 +100,21 @@
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.product.all.index') }}',
+                    url: '{{ route('admin.product.purchase.index') }}',
                 },
-                columns: [{
-                        data: 'id',
-                        name: 'id',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, full, meta) {
-                            return `<input type="checkbox" class="row-checkbox" value="${data}">`;
-                        },
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'photo',
-                        name: 'photo',
-                        className: "text-center",
-                    },
+                columns: [
+                    // {
+                    //     data: 'id',
+                    //     name: 'id',
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     render: function(data, type, full, meta) {
+                    //         return `<input type="checkbox" class="row-checkbox" value="${data}">`;
+                    //     },
+                    // },
                     {
                         data: 'supplier',
-                        name: 'supplier',
-                        orderable: false,
-                        className: "text-center",
+                        name: 'supplier'
                     },
                     {
                         data: 'category',
@@ -132,8 +123,25 @@
                         className: "text-center",
                     },
                     {
-                        data: 'unit',
-                        name: 'unit',
+                        data: 'product',
+                        name: 'product',
+                        className: "text-center",
+                    },
+                    {
+                        data: 'buying_qty',
+                        name: 'buying_qty',
+                        orderable: false,
+                        className: "text-center",
+                    },
+
+                    {
+                        data: 'unit_price',
+                        name: 'unit_price',
+                        className: "text-center",
+                    },
+                    {
+                        data: 'price',
+                        name: 'price',
                         className: "text-center",
                     },
                     {
@@ -216,8 +224,8 @@
         }
 
         /* .sorting_disabled {
-                                    background: purple !important ;
-                                } */
+                                                        background: purple !important ;
+                                                    } */
         .card__header {
             display: flex;
             justify-content: space-between;

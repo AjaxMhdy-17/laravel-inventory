@@ -13,17 +13,13 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
-
     use HandlesImageUploads;
-
     public ProductService $productService;
 
     public function __construct(ProductService $productService)
     {
         $this->productService = $productService;
     }
-
-
 
     public function index(Request $request)
     {
@@ -35,7 +31,7 @@ class ProductController extends Controller
                     return '<img src="' . $imageUrl . '" alt="Photo" width="50" height="50">';
                 })
                 ->addColumn('supplier', function ($category) {
-                    return $category->suppliers->name ; 
+                    return $category->suppliers->name;
                 })
                 ->addColumn('category', function ($product) {
                     $categoryName = optional($product->category)->name ?? 'N/A';
@@ -118,6 +114,10 @@ class ProductController extends Controller
         $data['categories'] =  $this->productService->categories();
         $data['units'] = $this->productService->units();
         $data['product'] = $this->productService->find($id);
+
+        $data['selectedSupplierId'] = $data['product']->supplier_id ?? null;
+        $data['selectedCategoryId'] = $data['product']->category_id ?? null;
+
         return view('backend.product.edit', $data);
     }
 

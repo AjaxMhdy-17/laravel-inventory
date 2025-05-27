@@ -38,6 +38,8 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
         Route::resource('category', CategoryController::class);
         Route::get('purchase/category', [PurchaseController::class, 'getCategory'])->name('purchase.getCategory');
         Route::get('purchase/product', [PurchaseController::class, 'getProduct'])->name('purchase.getProduct');
+
+        Route::post('purchase/{status}/action', [PurchaseController::class , 'statusAction'])->name('purchase.status');
         Route::resource('purchase', PurchaseController::class);
     });
 
