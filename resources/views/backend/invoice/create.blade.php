@@ -35,13 +35,14 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Supplier Name</label>
-                                            <select name='supplier_id' id='supplier_id' class="form-control select2"
+                                            <label>Category Name</label>
+                                            <select name="category_id" id="category_id" class="form-control select2"
                                                 style="width: 100%;">
-                                                @forelse ($suppliers as $supplier)
-                                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                                <option value="">Select Category</option>
+                                                @forelse ($categories as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                                                 @empty
-                                                    <option>No Option Added</option>
+                                                    <option>No Category Found</option>
                                                 @endforelse
                                             </select>
                                         </div>
@@ -49,26 +50,19 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Category Name</label>
-                                            <select name="category_id" id="category_id" class="form-control"
+                                            <label>Product Name</label>
+                                            <select name="product_id" id="product_id" class="form-control select2"
                                                 style="width: 100%;">
-                                                @foreach ($categories as $category)
-                                                    <option value="{{ $category->id }}"
-                                                        {{ old('category_id', $defaultCategoryId ?? '') == $category->id ? 'selected' : '' }}>
-                                                        {{ $category->name }}
-                                                    </option>
-                                                @endforeach
+                                                <option value="">Select Product</option>
                                             </select>
                                         </div>
                                     </div>
 
+
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Product Name</label>
-                                            <select name="product_id" id="product_id" class="form-control"
-                                                style="width: 100%;">
-                                                <option>No Option Added</option>
-                                            </select>
+                                            <label>Stock (Pic/Kg)</label>
+                                            <input type="text" class="form-control" id="product_stock" readonly>
                                         </div>
                                     </div>
 
@@ -208,6 +202,10 @@
                                                         </tr>
                                                     </tfoot>
                                                 </table>
+
+
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -275,38 +273,11 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            $('#sliderImageInput').on('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#uploadedImage').attr('src', e.target.result);
-                        $('#imagePreviewWrapper').show();
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    $('#imagePreviewWrapper').hide();
-                    $('#uploadedImage').attr('src', '');
-                }
-            });
-        });
 
-        $(function() {
-            $('.select2').select2()
-        });
-    </script>
-@endpush
-
-
-@push('js')
-    <script>
-        $(document).ready(function() {
-            // Initialize Select2 on all dropdowns
-            $('#supplier_id, #category_id, #product_id').select2({
+            $('#category_id, #product_id, #supplier_id').select2({
                 width: '100%'
             });
 
-            // Fetch categories based on supplier
             function fetchCategories(supplierId, callback) {
                 $('#category_id').empty().append('<option value="">Loading...</option>').trigger('change.select2');
                 $('#product_id').empty().append('<option value="">Select Product</option>').trigger(
@@ -328,27 +299,22 @@
                                         '">' + category.name + '</option>');
                                 });
                             } else {
-                                $('#category_id').append('<option>No Option Added</option>');
-                                $('#product_id').empty().append('<option>No Option Added</option>');
+                                $('#category_id').append('<option>No Category Found</option>');
                             }
+                            $('#category_id').select2({
+                                width: '100%'
+                            });
 
-                            // Refresh Select2
-                            $('#category_id').trigger('change.select2');
-
-                            // Callback with first category
                             if (typeof callback === "function") {
-                                const firstCategoryId = $('#category_id option:first').val();
-                                callback(firstCategoryId);
+                                callback($('#category_id').val());
                             }
                         }
                     });
                 } else {
-                    $('#category_id').html('<option>No Option Added</option>').trigger('change.select2');
-                    $('#product_id').html('<option>No Option Added</option>').trigger('change.select2');
+                    $('#category_id').html('<option value="">Select Category</option>').trigger('change.select2');
                 }
             }
 
-            // Fetch products based on category
             function fetchProducts(categoryId) {
                 $('#product_id').empty().append('<option value="">Loading...</option>').trigger('change.select2');
 
@@ -363,34 +329,55 @@
                             $('#product_id').empty().append('<option value="">Select Product</option>');
                             if (data.length > 0) {
                                 $.each(data, function(key, product) {
-                                    $('#product_id').append('<option value="' + product.id +
-                                        '">' + product.name + '</option>');
+                                    $('#product_id').append(
+                                        '<option value="' + product.id +
+                                        '" data-quantity="' + product.quantity + '">' +
+                                        product.name + '</option>'
+                                    );
                                 });
                             } else {
-                                $('#product_id').append('<option>No Option Added</option>');
+                                $('#product_id').append('<option>No Product Found</option>');
                             }
-
-                            $('#product_id').trigger('change.select2');
+                            $('#product_id').select2({
+                                width: '100%'
+                            });
                         }
                     });
                 } else {
-                    $('#product_id').html('<option>No Option Added</option>').trigger('change.select2');
+                    $('#product_id').html('<option value="">Select Product</option>').trigger('change.select2');
                 }
             }
 
-            // On page load: fetch categories & products for default supplier
             const defaultSupplierId = $('#supplier_id').val();
-            fetchCategories(defaultSupplierId, fetchProducts);
+            if (defaultSupplierId) {
+                fetchCategories(defaultSupplierId, fetchProducts);
+            }
 
-            // On supplier change
             $('#supplier_id').on('change', function() {
-                fetchCategories($(this).val(), fetchProducts);
+                const supplierId = $(this).val();
+                fetchCategories(supplierId, fetchProducts);
             });
 
-            // On category change
             $('#category_id').on('change', function() {
-                fetchProducts($(this).val());
+                const categoryId = $(this).val();
+                fetchProducts(categoryId);
             });
+
+            $('#product_id').on('change', function() {
+                const selectedOption = $(this).find('option:selected');
+                const quantity = selectedOption.data('quantity') || 0;
+                $('#product_stock').val(quantity);
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $('#product_id').on('change', function() {
+            const selectedOption = $(this).find('option:selected');
+            const quantity = selectedOption.data('quantity') || 0;
+            $('#product_stock').val(quantity);
         });
     </script>
 @endpush
@@ -486,6 +473,32 @@
             });
 
             updateTotalPrice();
+        });
+    </script>
+@endpush
+
+
+@push('js')
+    <script>
+        $(document).ready(function() {
+            $('#sliderImageInput').on('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#uploadedImage').attr('src', e.target.result);
+                        $('#imagePreviewWrapper').show();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreviewWrapper').hide();
+                    $('#uploadedImage').attr('src', '');
+                }
+            });
+        });
+
+        $(function() {
+            $('.select2').select2()
         });
     </script>
 @endpush

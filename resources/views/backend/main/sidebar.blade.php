@@ -97,7 +97,7 @@
                 <li
                     class="nav-item {{ request()->routeIs('admin.product.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fa fa-address-book" aria-hidden="true"></i>
+                        <i class="nav-icon fa fa-square" aria-hidden="true"></i>
                         <p>
                             Product
                             <i class="fas fa-angle-left right"></i>
@@ -130,6 +130,18 @@
                                 </p>
                             </a>
                         </li>
+
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.product.invoice.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.product.invoice*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>
+                                    Invoice
+                                </p>
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
 

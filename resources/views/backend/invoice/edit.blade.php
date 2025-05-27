@@ -10,7 +10,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>{{ $title }} Create</h1>
+                        <h1>{{ $title }}</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -30,14 +30,16 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <form class="card-body" action="{{ route('admin.product.all.store') }}" method="post"
+                                <form class="card-body"
+                                    action="{{ route('admin.product.all.update', ['all' => $product->id]) }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
+                                    @method('put')
                                     <div class="mb-3">
                                         <label>Name</label>
                                         <input type="text" name="name"
                                             class="form-control @error('name') is-invalid @enderror"
-                                            value="{{ old('name') }}" placeholder="Name">
+                                            value="{{ optional($product)->name }}" placeholder="Name">
                                         @error('name')
                                             <div class="error__msg">
                                                 {{ $message }}
@@ -45,33 +47,33 @@
                                         @enderror
                                     </div>
 
-
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Supplier Name</label>
                                             <select name="supplier_id" id="supplier_id" class="form-control select2"
-                                                style="width: 100%;" required>
-                                                <option value="">Select Category</option>
-                                                @forelse ($suppliers as $supplier)
+                                                style="width: 100%;">
+                                                @foreach ($suppliers as $supplier)
                                                     <option value="{{ $supplier->id }}"
-                                                        {{ old('supplier_id', $defaultSupplierId ?? '') == $supplier->id ? 'selected' : '' }}>
+                                                        {{ old('supplier_id', $selectedSupplierId ?? '') == $supplier->id ? 'selected' : '' }}>
                                                         {{ $supplier->name }}
                                                     </option>
-                                                @empty
-                                                    <option>No Option Added</option>
-                                                @endforelse
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="mb-3">
                                         <div class="form-group">
                                             <label>Category Name</label>
-                                            <select name="category_id" id="category_id" class="form-control"
-                                                style="width: 100%;" required>
-                                                <option>No Option Added</option>
+                                            <select name="category_id" id="category_id" class="form-control select2"
+                                                style="width: 100%;">
+                                                <!-- Options will be loaded by AJAX -->
                                             </select>
                                         </div>
                                     </div>
+
+
+
 
                                     <div class="mb-3">
                                         <div class="form-group">
@@ -91,7 +93,7 @@
                                                 <label>Quantity</label>
                                                 <input type="text" name="quantity"
                                                     class="form-control @error('quantity') is-invalid @enderror"
-                                                    value="{{ old('quantity') }}" placeholder="Quantity">
+                                                    value="{{ optional($product)->quantity }}" placeholder="Quantity">
                                                 @error('quantity')
                                                     <div class="error__msg">
                                                         {{ $message }}
@@ -103,7 +105,8 @@
                                             <div class="mb-3 text-right">
                                                 <label>Status</label>
                                                 <div>
-                                                    <input type="checkbox" name="status" data-toggle="toggle"
+                                                    <input type="checkbox" name="status"
+                                                        {{ $product->status == 1 ? 'checked' : '' }} data-toggle="toggle"
                                                         data-size="sm" />
                                                 </div>
                                             </div>
@@ -116,12 +119,18 @@
                                             <div class="input-group">
                                                 <div class="custom-file">
                                                     <input type="file" name="photo" class="custom-file-input"
-                                                        id="sliderImageInput" value="{{ old('photo') }}">
+                                                        id="sliderImageInput">
                                                     <label class="custom-file-label" for="sliderImageInput">Choose
                                                         file</label>
                                                 </div>
                                             </div>
                                         </div>
+                                        @if (!empty($product->photo))
+                                            <div class="mb-3 w__180" id="existingImageWrapper">
+                                                <img id="existingImage" class="img-fluid"
+                                                    src="{{ asset($product->photo) }}" alt="Existing Image">
+                                            </div>
+                                        @endif
                                         <div class="mb-3 w__180" id="imagePreviewWrapper" style="display: none;">
                                             <img id="uploadedImage" class="img-fluid" src=""
                                                 alt="New Image Preview">
@@ -141,6 +150,7 @@
             </div>
         </section>
     </div>
+
 @endsection
 
 
@@ -206,24 +216,36 @@
             $('.select2').select2()
         });
     </script>
-@endpush
 
-
-
-@push('js')
     <script>
         $(document).ready(function() {
-            // Initialize all select2s
-            $('#supplier_id, #category_id, #product_id').select2({
-                width: '100%'
+            $('#sliderImageInput').on('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#uploadedImage').attr('src', e.target.result);
+                        $('#imagePreviewWrapper').show();
+                        $('#existingImageWrapper').hide();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#imagePreviewWrapper').hide();
+                    $('#uploadedImage').attr('src', '');
+                    $('#existingImageWrapper').show();
+                }
             });
+        });
+    </script>
 
-            // Fetch categories based on supplier
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+
+            var selectedCategoryId = '{{ old('category_id', $selectedCategoryId ?? '') }}';
+
             function fetchCategories(supplierId, callback) {
-                $('#category_id').empty().append('<option value="">Loading...</option>').trigger('change.select2');
-                $('#product_id').empty().append('<option value="">Select Product</option>').trigger(
-                    'change.select2');
-
+                $('#category_id').empty();
                 if (supplierId) {
                     $.ajax({
                         url: "{{ route('admin.product.purchase.getCategory') }}",
@@ -232,52 +254,42 @@
                             supplier_id: supplierId
                         },
                         success: function(data) {
-                            $('#category_id').empty().append(
-                                '<option value="">Select Category</option>');
                             if (data.length > 0) {
                                 $.each(data, function(key, category) {
-                                    $('#category_id').append('<option value="' + category.id +
-                                        '">' + category.name + '</option>');
+                                    var selected = (category.id == selectedCategoryId) ?
+                                        'selected' : '';
+                                    $('#category_id').append('<option value="' +
+                                        category.id + '" ' + selected + '>' + category
+                                        .name +
+                                        '</option>');
                                 });
+                                if (typeof callback === "function") {
+
+                                    var catId = selectedCategoryId || $('#category_id option:first')
+                                        .val();
+                                    callback(catId);
+                                }
                             } else {
                                 $('#category_id').append('<option>No Option Added</option>');
                                 $('#product_id').empty().append('<option>No Option Added</option>');
                             }
-
-                            // Refresh Select2
-                            $('#category_id').trigger('change.select2');
-
-                            // Callback to fetch products for first category
-                            if (typeof callback === "function") {
-                                const firstCategoryId = $('#category_id option:first').val();
-                                callback(firstCategoryId);
-                            }
                         }
                     });
                 } else {
-                    $('#category_id').html('<option value="">Select Category</option>').trigger('change.select2');
-                    $('#product_id').html('<option value="">Select Product</option>').trigger('change.select2');
+                    $('#category_id').append('<option>No Option Added</option>');
+                    $('#product_id').empty().append('<option>No Option Added</option>');
                 }
             }
 
-            // Stub (implement if needed)
             function fetchProducts(categoryId) {
-                // You can implement this function later if needed
+                // Implement if you want to fetch products according to category
             }
-
-            // On page load
-            const defaultSupplierId = $('#supplier_id').val();
+            var defaultSupplierId = $('#supplier_id').val();
             fetchCategories(defaultSupplierId, fetchProducts);
-
-            // When supplier changes
             $('#supplier_id').on('change', function() {
+                selectedCategoryId = '';
                 fetchCategories($(this).val(), fetchProducts);
             });
-
-            // If needed:
-            // $('#category_id').on('change', function () {
-            //     fetchProducts($(this).val());
-            // });
         });
     </script>
 @endpush

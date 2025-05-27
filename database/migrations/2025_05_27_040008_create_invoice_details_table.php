@@ -11,26 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchases', function (Blueprint $table) {
+        Schema::create('invoice_details', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            
-
-            $table->unsignedBigInteger('supplier_id');
-            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
-            $table->string('supplier');
-            $table->string('category');
-            $table->string('product');
-            $table->string('purchase_no');
-            $table->text('description')->nullable();
-            $table->double('buying_qty');
-            $table->double('unit_price');
-            $table->double('price');
+            $table->integer('invoice_id');
+            $table->string('selling_qty');
+            $table->string('unit_price');
+            $table->string('selling_price');
             $table->boolean('status')->default('0')->comment("0 => pending , 1 => approved");
 
             $table->timestamps();
@@ -42,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchases');
+        Schema::dropIfExists('invoice_details');
     }
 };

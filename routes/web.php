@@ -6,6 +6,7 @@ use App\Http\Controllers\backend\BlogTagController;
 use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\backend\CustomerController;
 use App\Http\Controllers\backend\DashboardController;
+use App\Http\Controllers\backend\InvoiceController;
 use App\Http\Controllers\backend\ProductController;
 use App\Http\Controllers\backend\ProfileController;
 use App\Http\Controllers\backend\PurchaseController;
@@ -39,8 +40,10 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
         Route::get('purchase/category', [PurchaseController::class, 'getCategory'])->name('purchase.getCategory');
         Route::get('purchase/product', [PurchaseController::class, 'getProduct'])->name('purchase.getProduct');
 
-        Route::post('purchase/{status}/action', [PurchaseController::class , 'statusAction'])->name('purchase.status');
+        Route::post('purchase/{status}/action', [PurchaseController::class, 'statusAction'])->name('purchase.status');
         Route::resource('purchase', PurchaseController::class);
+
+        Route::resource('invoice', InvoiceController::class);
     });
 
 

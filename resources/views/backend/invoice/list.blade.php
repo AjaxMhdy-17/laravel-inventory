@@ -29,7 +29,7 @@
                             <div class="card__header">
                                 <h3 class="card-title">List Of {{ $title }}</h3>
                                 <div class="d-flex gap-3">
-                                    <a href="{{ route('admin.product.purchase.create') }}" class="btn btn-primary d-block">
+                                    <a href="{{ route('admin.product.invoice.create') }}" class="btn btn-primary d-block">
                                         Add {{ $title }}
                                     </a>
 
@@ -62,15 +62,12 @@
                                                     style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            {{-- <th class="sorting_disabled"><input type="checkbox"
-                                                                    id="select-all"></th> --}}
-                                                            <th>Date</th>
+                                                            <th>#</th>
+                                                            <th>Name</th>
+                                                            <th>Photo</th>
                                                             <th>Supplier</th>
                                                             <th>Category</th>
-                                                            <th>Product</th>
-                                                            <th>Quantity</th>
-                                                            <th>Unit Price</th>
-                                                            <th>Total Price</th>
+                                                            <th>Unit</th>
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -101,26 +98,30 @@
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.product.purchase.index') }}',
+                    url: '{{ route('admin.product.invoice.index') }}',
                 },
-                columns: [
-                    // {
-                    //     data: 'id',
-                    //     name: 'id',
-                    //     orderable: false,
-                    //     searchable: false,
-                    //     render: function(data, type, full, meta) {
-                    //         return `<input type="checkbox" class="row-checkbox" value="${data}">`;
-                    //     },
-                    // },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        title: '#',
+                        orderable: false,
+                        searchable: false,
+                        className: "text-center"
+                    },
                     {
-                        data: 'created_at',
-                        name: 'created_at',
-                        className: "w-85"
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'photo',
+                        name: 'photo',
+                        className: "text-center",
                     },
                     {
                         data: 'supplier',
-                        name: 'supplier'
+                        name: 'supplier',
+                        orderable: false,
+                        className: "text-center",
                     },
                     {
                         data: 'category',
@@ -129,25 +130,8 @@
                         className: "text-center",
                     },
                     {
-                        data: 'product',
-                        name: 'product',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'buying_qty',
-                        name: 'buying_qty',
-                        orderable: false,
-                        className: "text-center",
-                    },
-
-                    {
-                        data: 'unit_price',
-                        name: 'unit_price',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'price',
-                        name: 'price',
+                        data: 'unit',
+                        name: 'unit',
                         className: "text-center",
                     },
                     {
@@ -174,7 +158,6 @@
                 $('.row-checkbox').prop('checked', this.checked).trigger('change');
             });
 
-            // SweetAlert on delete click
             $(document).on('click', '.show-alert-delete-box', function(event) {
                 event.preventDefault();
                 const form = $(this).closest("form");
@@ -228,7 +211,6 @@
         th.sorting_disabled::after {
             content: "" !important;
         }
-
         .card__header {
             display: flex;
             justify-content: space-between;
@@ -241,12 +223,7 @@
 
         .action .dropdown-menu {
             position: absolute;
-            /* top: -20px !important;  */
             left: -50px !important;
-        }
-
-        .w-85 {
-            min-width: 85px;
         }
     </style>
 @endpush

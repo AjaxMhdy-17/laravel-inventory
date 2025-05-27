@@ -32,6 +32,9 @@ class PurchaseController extends Controller
                 ->addColumn('status', function ($purchase) {
                     return $purchase->status == 1 ? "<span class='badge badge-primary'>Approved</span>" : " <span class='badge badge-danger'>Pending</span>";
                 })
+                ->addColumn('created_at', function ($product) {
+                    return Carbon::parse($product->created_at)->format('Y-m-d');
+                })
                 ->addColumn('action', function ($purchase) {
                     return '
                        <div class="action">
@@ -52,7 +55,7 @@ class PurchaseController extends Controller
                        </div>
                     ';
                 })
-                ->rawColumns(['action', 'status', 'photo', 'supplier', 'unit', 'category'])
+                ->rawColumns(['action', 'status', 'category'])
                 ->make(true);
         }
         $data['title'] = "Purchase";
@@ -79,11 +82,11 @@ class PurchaseController extends Controller
         return response()->json(
             $category->product->map(fn($product) => [
                 'id' => $product->id,
-                'name' => $product->name
+                'name' => $product->name,
+                'quantity' => $product->quantity,
             ])
         );
     }
-
 
 
     public function create()
@@ -100,24 +103,24 @@ class PurchaseController extends Controller
     {
         $data = $request->validate([
             'purchase_items' => 'required|array|min:1',
-            // 'purchase_items.*.supplier_id' => 'required|exists:suppliers,id',
-            // 'purchase_items.*.product_id' => 'required|exists:products,id',
-            // 'purchase_items.*.category_id' => 'required|exists:categories,id',
-            // 'purchase_items.*.supplier' => 'required|string',
-            // 'purchase_items.*.category' => 'required|string',
-            // 'purchase_items.*.product' => 'required|string',
+            'purchase_items.*.supplier_id' => 'required|exists:suppliers,id',
+            'purchase_items.*.product_id' => 'required|exists:products,id',
+            'purchase_items.*.category_id' => 'required|exists:categories,id',
+            'purchase_items.*.supplier' => 'required|string',
+            'purchase_items.*.category' => 'required|string',
+            'purchase_items.*.product' => 'required|string',
             'purchase_items.*.unit' => 'required|numeric|min:1',
             'purchase_items.*.unit_price' => 'required|numeric|min:0',
             'purchase_items.*.price' => 'required|numeric|min:0',
             'purchase_items.*.description' => 'nullable|string',
         ], [
             'purchase_items.required' => 'You must add at least one purchase item.',
-            // 'purchase_items.*.supplier_id.required' => 'required.',
-            // 'purchase_items.*.category_id.exists' => 'Invalid category selected.',
-            // 'purchase_items.*.product_id.exists' => 'Invalid product selected.',
-            // 'purchase_items.*.category.required' => 'sometimes.',
-            // 'purchase_items.*.product.required' => 'sometimes.',
-            // 'purchase_items.*.supplier.required' => 'sometimes.',
+            'purchase_items.*.supplier_id.required' => 'required.',
+            'purchase_items.*.category_id.exists' => 'Invalid category selected.',
+            'purchase_items.*.product_id.exists' => 'Invalid product selected.',
+            'purchase_items.*.category.required' => 'sometimes.',
+            'purchase_items.*.product.required' => 'sometimes.',
+            'purchase_items.*.supplier.required' => 'sometimes.',
             'purchase_items.*.unit.required' => 'required.',
             'purchase_items.*.unit_price.required' => 'required.',
             'purchase_items.*.price.required' => 'required.',
@@ -126,24 +129,24 @@ class PurchaseController extends Controller
 
 
 
-        // foreach ($data['purchase_items'] as $idx => $item) {
+        foreach ($data['purchase_items'] as $idx => $item) {
 
-        //     $purchase = [
-        //         'user_id' => Auth::user()->id,
-        //         'product_id' => $item['product_id'],
-        //         'category_id' =>  $item['category_id'],
-        //         'supplier_id' =>  $item['supplier_id'],
-        //         'supplier' => $item['supplier'],
-        //         'category' =>  $item['category'],
-        //         'product' =>  $item['product'],
-        //         'purchase_no' => randNumber(),
-        //         'description' =>  $item['description'],
-        //         'buying_qty' =>  $item['unit'],
-        //         'unit_price' => $item['unit_price'],
-        //         'price' =>  $item['price'],
-        //     ];
-        //     Purchase::create($purchase);
-        // }
+            $purchase = [
+                'user_id' => Auth::user()->id,
+                'product_id' => $item['product_id'],
+                'category_id' =>  $item['category_id'],
+                'supplier_id' =>  $item['supplier_id'],
+                'supplier' => $item['supplier'],
+                'category' =>  $item['category'],
+                'product' =>  $item['product'],
+                'purchase_no' => randNumber(),
+                'description' =>  $item['description'],
+                'buying_qty' =>  $item['unit'],
+                'unit_price' => $item['unit_price'],
+                'price' =>  $item['price'],
+            ];
+            Purchase::create($purchase);
+        }
 
         $notification = array(
             'message' => "Purchase Added Successfully !",
