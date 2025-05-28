@@ -87,8 +87,6 @@
                                     <div class="col-12">
                                         <div class="card">
                                             <div class="card-body table-responsive p-0" style="max-height: 300px;">
-
-
                                                 <table class="table table-head-fixed text-nowrap" id="purchaseTable">
                                                     <thead>
                                                         <tr>
@@ -194,6 +192,20 @@
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="6" class="text-right">
+                                                                <span>
+                                                                    Discount :
+                                                                </span>
+                                                                <input type="text" id="discountPrice"
+                                                                    style="width: 200px; padding-left: 5px;"
+                                                                    placeholder="Discount Price">
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="6" class="text-right">
+                                                                <span>
+                                                                    Grand Total :
+                                                                </span>
                                                                 <input type="text" id="totalPrice" readonly
                                                                     style="width: 200px; padding-left: 5px;"
                                                                     placeholder="Total Price">
@@ -202,13 +214,92 @@
                                                         </tr>
                                                     </tfoot>
                                                 </table>
-
-
-
-
                                             </div>
                                         </div>
                                     </div>
+
+
+                                    <div class="col-12 mb-3">
+                                        <label>Description</label>
+                                        <textarea name="description" id="description" class="form-control" rows="3" placeholder="Description"></textarea>
+                                    </div>
+
+                                    <div class="col-md-4 col-lg-3">
+                                        <div class="form-group">
+                                            <label>Paid Status</label>
+                                            <select name="paid_status" id="paid_status" class="form-control select2"
+                                                style="width: 100%;">
+                                                <option value="">Select Category</option>
+                                                <option value="full_paid">Full Paid</option>
+                                                <option value="full_due">Full Due</option>
+                                                <option value="partial_paid">Partial Paid</option>
+                                            </select>
+                                            <div class="mt-2">
+                                                <input type="text" name="form-control"
+                                                    class="paid_amount form-control" style="display: none"
+                                                    placeholder="paid amount" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8 col-lg-9">
+                                        <div class="form-group">
+                                            <label>Customer Name</label>
+                                            <select name="customer_id" id="customer_id" class="form-control select2"
+                                                style="width: 100%;">
+                                                <option value="">Select Customer</option>
+                                                @foreach ($customers as $customer)
+                                                    <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                                @endforeach
+                                                <option value="0">No Customer Found</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col 12" id="customer_container" style="display: none">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Customer Name</label>
+                                                    <input type="text" class="form-control" name="name"
+                                                        id="customer_name">
+                                                    @error('name')
+                                                        <div class="error__msg">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Mobile Number</label>
+                                                    <input type="text" class="form-control" name="phone"
+                                                        id="customer_phone">
+                                                    @error('phone')
+                                                        <div class="error__msg">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label>Customer Email</label>
+                                                    <input type="email" class="form-control" name="email"
+                                                        id="customer_email">
+                                                    @error('email')
+                                                        <div class="error__msg">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
 
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-info">
@@ -371,13 +462,27 @@
         });
     </script>
 
-
-
     <script>
         $('#product_id').on('change', function() {
             const selectedOption = $(this).find('option:selected');
             const quantity = selectedOption.data('quantity') || 0;
             $('#product_stock').val(quantity);
+        });
+        $(document).on('change', '#paid_status', function() {
+            var paid_status = $(this).val();
+            if (paid_status == 'partial_paid') {
+                $('.paid_amount').show();
+            } else {
+                $('.paid_amount').hide();
+            }
+        });
+        $(document).on('change', '#customer_id', function() {
+            var customer_id = $(this).val();
+            if (customer_id == '0') {
+                $('#customer_container').show();
+            } else {
+                $('#customer_container').hide();
+            }
         });
     </script>
 @endpush
@@ -406,7 +511,12 @@
                     let price = parseFloat($(this).find('.rowPrice').val()) || 0;
                     total += price;
                 });
-                $('#totalPrice').val(total.toFixed(2));
+
+                let discount = parseFloat($('#discountPrice').val()) || 0;
+                let grandTotal = total - discount;
+                if (grandTotal < 0) grandTotal = 0;
+
+                $('#totalPrice').val(grandTotal.toFixed(2));
             }
 
             function calculateRowPrice($row) {
@@ -428,33 +538,32 @@
                 let productName = getSelectedProductName();
 
                 let row = `<tr>
-                <td>
-                    <input type="hidden" name="purchase_items[${rowIndex}][supplier_id]" value="${supplierId}">
-                    <input type="hidden" name="purchase_items[${rowIndex}][supplier]" value="${supplierName}">
-                    <input type="hidden" name="purchase_items[${rowIndex}][category_id]" value="${categoryId}">
-                    <input type="text" name="purchase_items[${rowIndex}][category]" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
-                </td>
-                <td>
-                    <input type="hidden" name="purchase_items[${rowIndex}][product_id]" value="${productId}">
-                    <input type="text" name="purchase_items[${rowIndex}][product]" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
-                </td>
-                <td>
-                    <input type="number" min="0" name="purchase_items[${rowIndex}][unit]" class="form-control unit" style="width:100px;" placeholder="Unit">
-                </td>
-                <td>
-                    <input type="number" min="0" name="purchase_items[${rowIndex}][unit_price]" class="form-control unitPrice" style="width:80px;" placeholder="Unit Price">
-                </td>
-                <td>
-                    <input type="text" name="purchase_items[${rowIndex}][description]" class="form-control" style="width:180px;" placeholder="Description">
-                </td>
-                <td>
-                    <input type="text" name="purchase_items[${rowIndex}][price]" class="form-control rowPrice" style="width:120px;" readonly value="0.00">
-                </td>
-                <td class="text-right">
-                    <button class="btn btn-warning btnRemoveRow" type="button">x</button>
-                </td>
-            </tr>
-        `;
+            <td>
+                <input type="hidden" name="purchase_items[${rowIndex}][supplier_id]" value="${supplierId}">
+                <input type="hidden" name="purchase_items[${rowIndex}][supplier]" value="${supplierName}">
+                <input type="hidden" name="purchase_items[${rowIndex}][category_id]" value="${categoryId}">
+                <input type="text" name="purchase_items[${rowIndex}][category]" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
+            </td>
+            <td>
+                <input type="hidden" name="purchase_items[${rowIndex}][product_id]" value="${productId}">
+                <input type="text" name="purchase_items[${rowIndex}][product]" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
+            </td>
+            <td>
+                <input type="number" min="0" name="purchase_items[${rowIndex}][unit]" class="form-control unit" style="width:100px;" placeholder="Unit">
+            </td>
+            <td>
+                <input type="number" min="0" name="purchase_items[${rowIndex}][unit_price]" class="form-control unitPrice" style="width:80px;" placeholder="Unit Price">
+            </td>
+            <td>
+                <input type="text" name="purchase_items[${rowIndex}][description]" class="form-control" style="width:180px;" placeholder="Description">
+            </td>
+            <td>
+                <input type="text" name="purchase_items[${rowIndex}][price]" class="form-control rowPrice" style="width:120px;" readonly value="0.00">
+            </td>
+            <td class="text-right">
+                <button class="btn btn-warning btnRemoveRow" type="button">x</button>
+            </td>
+        </tr>`;
                 $('#purchaseTable tbody').append(row);
                 rowIndex++;
             });
@@ -470,6 +579,11 @@
                 if ($('#purchaseTable tbody tr').length === 0) {
                     $('#purchaseTable tbody').hide();
                 }
+            });
+
+            // Listen to discount field changes
+            $('#discountPrice').on('input', function() {
+                updateTotalPrice();
             });
 
             updateTotalPrice();

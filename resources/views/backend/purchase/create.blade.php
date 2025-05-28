@@ -200,6 +200,9 @@
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="6" class="text-right">
+                                                                <span>
+                                                                    Grand Total :
+                                                                </span>
                                                                 <input type="text" id="totalPrice" readonly
                                                                     style="width: 200px; padding-left: 5px;"
                                                                     placeholder="Total Price">
@@ -301,12 +304,10 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            // Initialize Select2 on all dropdowns
             $('#supplier_id, #category_id, #product_id').select2({
                 width: '100%'
             });
 
-            // Fetch categories based on supplier
             function fetchCategories(supplierId, callback) {
                 $('#category_id').empty().append('<option value="">Loading...</option>').trigger('change.select2');
                 $('#product_id').empty().append('<option value="">Select Product</option>').trigger(
@@ -332,10 +333,7 @@
                                 $('#product_id').empty().append('<option>No Option Added</option>');
                             }
 
-                            // Refresh Select2
                             $('#category_id').trigger('change.select2');
-
-                            // Callback with first category
                             if (typeof callback === "function") {
                                 const firstCategoryId = $('#category_id option:first').val();
                                 callback(firstCategoryId);
@@ -378,16 +376,13 @@
                 }
             }
 
-            // On page load: fetch categories & products for default supplier
             const defaultSupplierId = $('#supplier_id').val();
             fetchCategories(defaultSupplierId, fetchProducts);
 
-            // On supplier change
             $('#supplier_id').on('change', function() {
                 fetchCategories($(this).val(), fetchProducts);
             });
 
-            // On category change
             $('#category_id').on('change', function() {
                 fetchProducts($(this).val());
             });
@@ -441,33 +436,32 @@
                 let productName = getSelectedProductName();
 
                 let row = `<tr>
-                <td>
-                    <input type="hidden" name="purchase_items[${rowIndex}][supplier_id]" value="${supplierId}">
-                    <input type="hidden" name="purchase_items[${rowIndex}][supplier]" value="${supplierName}">
-                    <input type="hidden" name="purchase_items[${rowIndex}][category_id]" value="${categoryId}">
-                    <input type="text" name="purchase_items[${rowIndex}][category]" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
-                </td>
-                <td>
-                    <input type="hidden" name="purchase_items[${rowIndex}][product_id]" value="${productId}">
-                    <input type="text" name="purchase_items[${rowIndex}][product]" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
-                </td>
-                <td>
-                    <input type="number" min="0" name="purchase_items[${rowIndex}][unit]" class="form-control unit" style="width:100px;" placeholder="Unit">
-                </td>
-                <td>
-                    <input type="number" min="0" name="purchase_items[${rowIndex}][unit_price]" class="form-control unitPrice" style="width:80px;" placeholder="Unit Price">
-                </td>
-                <td>
-                    <input type="text" name="purchase_items[${rowIndex}][description]" class="form-control" style="width:180px;" placeholder="Description">
-                </td>
-                <td>
-                    <input type="text" name="purchase_items[${rowIndex}][price]" class="form-control rowPrice" style="width:120px;" readonly value="0.00">
-                </td>
-                <td class="text-right">
-                    <button class="btn btn-warning btnRemoveRow" type="button">x</button>
-                </td>
-            </tr>
-        `;
+                    <td>
+                        <input type="hidden" name="purchase_items[${rowIndex}][supplier_id]" value="${supplierId}">
+                        <input type="hidden" name="purchase_items[${rowIndex}][supplier]" value="${supplierName}">
+                        <input type="hidden" name="purchase_items[${rowIndex}][category_id]" value="${categoryId}">
+                        <input type="text" name="purchase_items[${rowIndex}][category]" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
+                    </td>
+                    <td>
+                        <input type="hidden" name="purchase_items[${rowIndex}][product_id]" value="${productId}">
+                        <input type="text" name="purchase_items[${rowIndex}][product]" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
+                    </td>
+                    <td>
+                        <input type="number" min="0" name="purchase_items[${rowIndex}][unit]" class="form-control unit" style="width:100px;" placeholder="Unit">
+                    </td>
+                    <td>
+                        <input type="number" min="0" name="purchase_items[${rowIndex}][unit_price]" class="form-control unitPrice" style="width:80px;" placeholder="Unit Price">
+                    </td>
+                    <td>
+                        <input type="text" name="purchase_items[${rowIndex}][description]" class="form-control" style="width:180px;" placeholder="Description">
+                    </td>
+                    <td>
+                        <input type="text" name="purchase_items[${rowIndex}][price]" class="form-control rowPrice" style="width:120px;" readonly value="0.00">
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-warning btnRemoveRow" type="button">x</button>
+                    </td>
+                </tr>`;
                 $('#purchaseTable tbody').append(row);
                 rowIndex++;
             });

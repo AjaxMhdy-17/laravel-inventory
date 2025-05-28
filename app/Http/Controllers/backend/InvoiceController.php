@@ -4,6 +4,7 @@ namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Supplier;
 use Carbon\Carbon;
@@ -76,9 +77,13 @@ class InvoiceController extends Controller
         $data['title'] = "Invoice";
         $data['categories'] = Category::all();
         $data['products'] = Product::all();
+        $data['customers'] = Customer::all();
         $data['randNumber'] = randNumber();
         return view('backend.invoice.create', $data);
     }
+
+
+    
 
     /**
      * Store a newly created resource in storage.
