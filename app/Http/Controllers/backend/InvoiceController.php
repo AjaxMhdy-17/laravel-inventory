@@ -75,9 +75,6 @@ class InvoiceController extends Controller
         return view('backend.invoice.list', $data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $data['title'] = "Invoice";
@@ -95,10 +92,33 @@ class InvoiceController extends Controller
             'customer_id' => 'sometimes',
             'product_id' => 'sometimes',
             'invoice_description' => 'sometimes',
-            'totalPrice' => 'required',
-            'discountPrice' => 'required',
+            'totalPrice' => ['required', 'numeric', 'min:0'],
+            'discountPrice' => [
+                'required',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value > $request->input('totalPrice')) {
+                        $fail('Discount cannot be greater than total price.');
+                    }
+                }
+            ],
             'paid_status' => 'required',
-            'paid_amount' => Rule::when($request->paid_status === 'partial_paid', 'required', 'sometimes'),
+            'paid_amount' => [
+                Rule::when($request->paid_status === 'partial_paid', ['required', 'numeric', 'min:0']),
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->paid_status === 'partial_paid') {
+                        $total = floatval($request->input('totalPrice'));
+                        $discount = floatval($request->input('discountPrice'));
+                        $paid = floatval($value);
+
+                        $netTotal = $total ;
+                        if ($paid > $netTotal) {
+                            $fail('Paid amount cannot be greater than total price after discount.');
+                        }
+                    }
+                }
+            ],
             'name' => 'sometimes',
             'email' => 'sometimes',
             'phone' => 'sometimes',
@@ -181,7 +201,7 @@ class InvoiceController extends Controller
                     $payment->paid_status = "full_due";
                     $payment->due_amount = $val['totalPrice'];
                     $payment->paid_amount = 0;
-                    $payment->current_paid_amount = 0; 
+                    $payment->current_paid_amount = 0;
                 }
                 $payment->save();
             }

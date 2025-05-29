@@ -212,7 +212,9 @@
                                                                 <input type="text" name="discountPrice"
                                                                     id="discountPrice"
                                                                     style="width: 200px; padding-left: 5px;"
-                                                                    placeholder="Discount Price">
+                                                                    placeholder="Discount Price"
+                                                                    value="{{old('discountPrice')}}"
+                                                                    />
                                                                 <p>
                                                                     @error('discountPrice')
                                                                         {{ $message }}
@@ -267,8 +269,9 @@
                                                 </div>
                                             @enderror
                                             <div class="mt-2">
-                                                <input type="text" name="paid_amount" class="paid_amount form-control"
-                                                    style="display: none" placeholder="paid amount" />
+                                                <input type="text" name="paid_amount" id="paid_amount"
+                                                    class="paid_amount form-control" style="display: none"
+                                                    placeholder="paid amount" />
                                             </div>
                                             <div>
                                                 @error('paid_amount')
@@ -632,6 +635,52 @@
 
             updateTotalPrice();
         });
+    </script>
+
+
+    <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const discountInput = document.getElementById('discountPrice');
+        //     const totalPriceInput = document.getElementById('totalPrice');
+        //     const paidInput = document.getElementById('paid_amount');
+        //     const form = document.getElementById('purchaseForm');
+
+        //     function cleanNumber(val) {
+        //         return parseFloat(val?.toString().trim().replace(/,/g, '')) || 0;
+        //     }
+
+        //     function validateDiscountAndPaid(showAlerts = true) {
+        //         const total = cleanNumber(totalPriceInput.value);
+        //         const discount = cleanNumber(discountInput.value);
+        //         const paid = cleanNumber(paidInput?.value);
+        //         const netTotal = total ;
+        //         if (discount > total) {
+        //             if (showAlerts) alert('❌ Discount cannot be greater than Total Price.');
+        //             discountInput.value = '';
+        //             return false;
+        //         }
+
+        //         if (paid > netTotal) {
+        //             if (showAlerts) {
+        //                 alert(`❌ Paid amount (${paid}) cannot be greater than Total After Discount (${netTotal}).`);
+        //             }
+        //             paidInput.value = '';
+        //             return false;
+        //         }
+
+        //         return true;
+        //     }
+        //     discountInput.addEventListener('input', () => validateDiscountAndPaid(true));
+        //     if (paidInput) paidInput.addEventListener('input', () => validateDiscountAndPaid(true));
+        //     if (form) {
+        //         form.addEventListener('submit', function(e) {
+        //             if (!validateDiscountAndPaid(false)) {
+        //                 e.preventDefault();
+        //                 alert('Please fix discount or paid amount errors before submitting.');
+        //             }
+        //         });
+        //     }
+        // });
     </script>
 @endpush
 
