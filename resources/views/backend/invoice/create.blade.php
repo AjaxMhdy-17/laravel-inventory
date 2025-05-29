@@ -29,10 +29,9 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form class="row" action="{{ route('admin.product.purchase.store') }}" method="post"
+                                <form class="row" action="{{ route('admin.product.invoice.store') }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
-
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Category Name</label>
@@ -45,6 +44,11 @@
                                                     <option>No Category Found</option>
                                                 @endforelse
                                             </select>
+                                            @error('category_id')
+                                                <div>
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -55,6 +59,11 @@
                                                 style="width: 100%;">
                                                 <option value="">Select Product</option>
                                             </select>
+                                            @error('product_id')
+                                                <div>
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -64,6 +73,11 @@
                                             <label>Stock (Pic/Kg)</label>
                                             <input type="text" class="form-control" id="product_stock" readonly>
                                         </div>
+                                        @error('product_stock')
+                                            <div class="error__msg">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6 text-right mb-2">
@@ -221,7 +235,8 @@
 
                                     <div class="col-12 mb-3">
                                         <label>Description</label>
-                                        <textarea name="description" id="description" class="form-control" rows="3" placeholder="Description"></textarea>
+                                        <textarea name="invoice_description" id="description" class="form-control" rows="3"
+                                            placeholder="Description"></textarea>
                                     </div>
 
                                     <div class="col-md-4 col-lg-3">
@@ -234,11 +249,23 @@
                                                 <option value="full_due">Full Due</option>
                                                 <option value="partial_paid">Partial Paid</option>
                                             </select>
+                                            @error('paid_status')
+                                                <div class="error__msg">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                             <div class="mt-2">
-                                                <input type="text" name="form-control"
-                                                    class="paid_amount form-control" style="display: none"
-                                                    placeholder="paid amount" />
+                                                <input type="text" name="paid_amount" class="paid_amount form-control"
+                                                    style="display: none" placeholder="paid amount" />
                                             </div>
+                                            <div>
+                                                @error('paid_amount')
+                                                    <div class="error__msg">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                            </div>
+
                                         </div>
                                     </div>
 
@@ -251,8 +278,13 @@
                                                 @foreach ($customers as $customer)
                                                     <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                                 @endforeach
-                                                <option value="0">No Customer Found</option>
+                                                <option value="0">No Customer Found , Create New One</option>
                                             </select>
+                                            @error('customer_id')
+                                                <div>
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
                                         </div>
                                     </div>
 

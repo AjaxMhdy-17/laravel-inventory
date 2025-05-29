@@ -19,7 +19,7 @@ return new class extends Migration
 
 
             $table->string('invoice_no');
-            $table->text('description')->nullable();
+            $table->text('invoice_description')->nullable();
             $table->boolean('status')->default('0')->comment("0 => pending , 1 => approved");
             $table->timestamps();
         });
