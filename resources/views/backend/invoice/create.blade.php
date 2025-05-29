@@ -209,9 +209,15 @@
                                                                 <span>
                                                                     Discount :
                                                                 </span>
-                                                                <input type="text" id="discountPrice"
+                                                                <input type="text" name="discountPrice"
+                                                                    id="discountPrice"
                                                                     style="width: 200px; padding-left: 5px;"
                                                                     placeholder="Discount Price">
+                                                                <p>
+                                                                    @error('discountPrice')
+                                                                        {{ $message }}
+                                                                    @enderror
+                                                                </p>
                                                             </td>
                                                             <td></td>
                                                         </tr>
@@ -220,9 +226,15 @@
                                                                 <span>
                                                                     Grand Total :
                                                                 </span>
-                                                                <input type="text" id="totalPrice" readonly
-                                                                    style="width: 200px; padding-left: 5px;"
-                                                                    placeholder="Total Price">
+                                                                <input type="text" name="totalPrice" id="totalPrice"
+                                                                    readonly style="width: 200px; padding-left: 5px;"
+                                                                    placeholder="Total Price" />
+                                                                <p>
+                                                                    @error('totalPrice')
+                                                                        {{ $message }}
+                                                                    @enderror
+                                                                </p>
+
                                                             </td>
                                                             <td></td>
                                                         </tr>

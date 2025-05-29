@@ -16,17 +16,15 @@ return new class extends Migration
 
             $table->unsignedBigInteger('invoice_id');
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
-
-
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-
             $table->string('paid_status', 50);
             $table->double('paid_amount');
+            $table->double('current_paid_amount')->nullable();
             $table->double('due_amount');
             $table->double('total_amount');
+            $table->double('total_amount_after_discount');
             $table->double('discount_amount');
-
             $table->timestamps();
         });
     }

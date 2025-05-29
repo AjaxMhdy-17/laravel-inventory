@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('selling_qty');
             $table->string('unit_price');
             $table->string('selling_price');
+            $table->text('description')->nullable();
             $table->boolean('status')->default('0')->comment("0 => pending , 1 => approved");
 
             $table->timestamps();

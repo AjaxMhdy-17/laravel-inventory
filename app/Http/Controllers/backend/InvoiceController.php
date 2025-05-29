@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoiceDetail;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -85,12 +88,6 @@ class InvoiceController extends Controller
         return view('backend.invoice.create', $data);
     }
 
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $val = $request->validate([
@@ -98,27 +95,19 @@ class InvoiceController extends Controller
             'customer_id' => 'sometimes',
             'product_id' => 'sometimes',
             'invoice_description' => 'sometimes',
+            'totalPrice' => 'required',
+            'discountPrice' => 'required',
             'paid_status' => 'required',
             'paid_amount' => Rule::when($request->paid_status === 'partial_paid', 'required', 'sometimes'),
+            'name' => 'sometimes',
+            'email' => 'sometimes',
+            'phone' => 'sometimes',
         ], [
-            // 'category_id.required' => 'Please Select A Category',
-            // 'product_id.required' => 'Please Select A Product',
-            // 'customer_id.required' => 'Please Select A Customer Or Create A New One',
+            'totalPrice.required' => 'required',
+            'discountPrice.required' => 'required',
             'paid_status.required' => 'Please Select A Payment Status',
             'paid_amount.required' => 'Please Enter Partial Paid Amount',
         ]);
-
-
-//         id	user_id	invoice_no	invoice_description	status
-// 0 => pending , 1 => approved	created_at	updated_at	
-
-        $invoice = Invoice::create([
-            'user_id' => Auth::user()->id , 
-            'invoice_no' => randNumber(), 
-            'invoice_description' => $val['invoice_description'] , 
-            
-        ]);
-
 
         $data = $request->validate([
             'purchase_items' => 'required|array|min:1',
@@ -141,45 +130,72 @@ class InvoiceController extends Controller
             'purchase_items.*.price.required' => 'required.',
         ]);
 
-        dump($val) ; 
-        dd($data);
+        $invoice = new Invoice();
+        $invoice->user_id = Auth::user()->id;
+        $invoice->invoice_no = randNumber();
+        $invoice->invoice_description = $val['invoice_description'];
+        $invoice->status = 0;
+        DB::transaction(function () use ($val, $data, $invoice) {
+            if ($invoice->save()) {
+                foreach ($data['purchase_items'] as $idx => $item) {
+                    $invoice_detail = new InvoiceDetail();
+                    $invoice_detail->status = 0;
+                    $invoice_detail->product_id = $item['product_id'];
+                    $invoice_detail->category_id = $item['category_id'];
+                    $invoice_detail->invoice_id =  $invoice->id;
+                    $invoice_detail->selling_qty = $item['unit'];
+                    $invoice_detail->unit_price =  $item['unit_price'];
+                    $invoice_detail->selling_price =  $item['price'];
+                    $invoice_detail->description =  $item['description'];
+                    $invoice_detail->save();
+                }
+                if ($val['customer_id'] == 0) {
+                    $customer = new Customer();
+                    $customer->name = $val['name'];
+                    $customer->email = $val['email'];
+                    $customer->phone = $val['phone'];
+                    $customer->save();
+                    $customer_id = $customer->id;
+                } else {
+                    $customer_id = $val['customer_id'];
+                }
+                $payment = new Payment();
+                $payment->invoice_id = $invoice->id;
+                $payment->customer_id = $customer_id;
+                $payment->total_amount = $val['totalPrice'];
+                $payment->discount_amount = $val['discountPrice'];
 
+                $payment->total_amount_after_discount = $val['totalPrice'] - $val['discountPrice'];
 
-
-
+                if ($val['paid_status'] == 'partial_paid') {
+                    $payment->paid_status = "partial_paid";
+                    $payment->paid_amount = $val['paid_amount'];
+                    $payment->current_paid_amount = $val['paid_amount'];
+                    $payment->due_amount = $val['totalPrice'] - $val['paid_amount'];
+                } else if ($val['paid_status'] == 'full_paid') {
+                    $payment->paid_status = "full_paid";
+                    $payment->due_amount = 0;
+                    $payment->paid_amount = $val['totalPrice'];
+                    $payment->current_paid_amount = $val['totalPrice'];
+                } else if ($val['paid_status'] == 'full_due') {
+                    $payment->paid_status = "full_due";
+                    $payment->due_amount = $val['totalPrice'];
+                    $payment->paid_amount = 0;
+                    $payment->current_paid_amount = 0; 
+                }
+                $payment->save();
+            }
+        });
         $notification = array(
-            'message' => "Please Select All Fields!",
-            'alert-type' => 'danger'
+            'message' => "Invoice Added Successfully !",
+            'alert-type' => 'success'
         );
         return back()->with($notification);
-
-        // if ($val['category_id'] == null) {
-        //     $notification = array(
-        //         'message' => "Please Select All Fields!",
-        //         'alert-type' => 'danger'
-        //     );
-        //     return back()->with($notification);
-        // }
-
-        // dd();
-
-        // $data = $request->validate([
-        //     'category_id' => 'required',
-        //     'product_id' => 'required',
-        //     'purchase_id' => 'required',
-        //     'invoice_description' => 'sometimes',
-        //     'paid_status' => 'required',
-        //     'paid_amount' => 'sometimes',
-        //     'customer_id' => 'sometimes',
-        // ]);
-        // dd($data);
     }
 
     public function validateData($request) {}
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         //
