@@ -29,7 +29,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form class="row" action="{{ route('admin.product.invoice.store') }}" method="post"
+                                <form class="row" action="{{ route('admin.invoice.all.store') }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="col-md-6">

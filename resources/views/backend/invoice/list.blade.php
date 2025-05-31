@@ -29,7 +29,7 @@
                             <div class="card__header">
                                 <h3 class="card-title">List Of {{ $title }}</h3>
                                 <div class="d-flex gap-3">
-                                    <a href="{{ route('admin.product.invoice.create') }}" class="btn btn-primary d-block">
+                                    <a href="{{ route('admin.invoice.all.create') }}" class="btn btn-primary d-block">
                                         Add {{ $title }}
                                     </a>
 
@@ -98,7 +98,7 @@
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.product.invoice.index') }}',
+                    url: '{{ route('admin.invoice.all.index') }}',
                 },
                 columns: [{
                         data: 'DT_RowIndex',

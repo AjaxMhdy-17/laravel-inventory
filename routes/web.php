@@ -43,7 +43,7 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
         Route::post('purchase/{status}/action', [PurchaseController::class, 'statusAction'])->name('purchase.status');
         Route::resource('purchase', PurchaseController::class);
 
-        Route::resource('invoice', InvoiceController::class);
+        // Route::resource('invoice', InvoiceController::class);
     });
 
 

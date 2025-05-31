@@ -23,19 +23,15 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $invoices = Invoice::with(['invoice_details.product'])->orderBy('created_at', 'desc');
+            $invoices = Invoice::with(['user' , 'invoice_details'])->orderBy('created_at', 'desc');
             return DataTables::eloquent($invoices)
                 ->addIndexColumn()
                 ->addColumn('name', function ($invoice) {
                     return $invoice->user->name ?? 'N/A';
                 })
-                ->addColumn('num_of_product', function ($invoice) {
-                    return $invoice->invoice_description ?? 'N/A';
-                })
                 ->addColumn('invoice_description', function ($invoice) {
                     return $invoice->invoice_description ?? 'N/A';
                 })
-
                 ->addColumn('created_at', function ($product) {
                     return Carbon::parse($product->created_at)->format('Y-m-d');
                 })
@@ -50,11 +46,11 @@ class InvoiceController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.product.invoice.show', ['invoice' => $invoice->invoice_details->id]) . '">View</a>
+                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', ['all' => $invoice->invoice_details->id]) . '">View</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="' . route('admin.product.invoice.edit', ['invoice' => $invoice->id]) . '">Edit</a>
+                                <a class="dropdown-item" href="' . route('admin.invoice.all.edit', ['all' => $invoice->id]) . '">Edit</a>
                                 <div class="dropdown-divider"></div>
-                                 <form class="delete-form" method="POST" action="' . route('admin.product.invoice.destroy', ['invoice' => $invoice->id]) . '">
+                                 <form class="delete-form" method="POST" action="' . route('admin.invoice.all.destroy', ['all' => $invoice->id]) . '">
                                     ' . csrf_field() . '
                                     ' . method_field("DELETE") . '
                                      <button type="submit" class="dropdown-item text-danger show-alert-delete-box">Delete</button>
@@ -64,7 +60,7 @@ class InvoiceController extends Controller
                        </div>
                     ';
                 })
-                ->rawColumns(['action', 'status', 'photo', 'supplier', 'unit', 'category'])
+                ->rawColumns(['action', 'status'])
                 ->make(true);
         }
         $data['title'] = "Invoice";
@@ -216,21 +212,10 @@ class InvoiceController extends Controller
     {
         $data['title'] = "Invoice Details";
 
-        $data['purchase'] = Purchase::with('user')->findOrFail($id);
+        $data['invoice'] = Invoice::with('user')->findOrFail($id);
 
-        return view('backend.invoice.view', $data);
+        // return view('backend.invoice.view', $data);
     }
-
-    public function edit(string $id)
-    {
-        //
-    }
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
 
     public function destroy(string $id)
     {
@@ -243,7 +228,5 @@ class InvoiceController extends Controller
             'alert-type' => 'danger'
         );
         return back()->with($notification);
-        // $invoice_detail = new InvoiceDetail();
-        // $payment = new Payment();
     }
 }
