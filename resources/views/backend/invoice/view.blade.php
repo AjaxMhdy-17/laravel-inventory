@@ -29,7 +29,7 @@
                             <div class="card__header">
                                 <h3 class="card-title">{{ $title }}</h3>
                                 <div>
-                                    <a href="{{ route('admin.product.all.index') }}" class="btn btn-info">Back</a>
+                                    <a href="{{ route('admin.product.purchase.index') }}" class="btn btn-info">Back</a>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -43,32 +43,38 @@
                                         <div class="col-md-8">
                                             <div class="card-body">
                                                 <div class="">
+                                                    <label for="">Product Suppler Name : </label>
+                                                    <span class=""> {{ $purchase->supplier }}</span>
+                                                </div>
+                                                <div class="">
+                                                    <label for="">Product Category Name : </label>
+                                                    <span class=""> {{ $purchase->category }}</span>
+                                                </div>
+                                                <div class="">
                                                     <label for="">Product Name : </label>
-                                                    <p class=""> {{ $product->name }}</p>
+                                                    <span class=""> {{ $purchase->product }}</span>
                                                 </div>
                                                 <div class="">
-                                                    <label for="">Product supplier : </label>
-                                                    <p class=""> {{ $product->suppliers->name }}</p>
+                                                    <label for="">Product Description : </label>
+                                                    <span class=""> {{ $purchase->description }}</span>
                                                 </div>
                                                 <div class="">
-                                                    <label for="">Product Category : </label>
-                                                    <p class=""> {{ $product->category->name }}</p>
+                                                    <label for="">Product Buying Quantity : </label>
+                                                    <span class=""> {{ $purchase->buying_qty }}</span>
                                                 </div>
+
                                                 <div class="">
-                                                    <label for="">Product Unit : </label>
-                                                    <p class=""> {{ $product->unit->name }}</p>
+                                                    <label for="">Product Unit Price : </label>
+                                                    <span class=""> {{ $purchase->unit_price }}</span>
                                                 </div>
-                                                <div>
-                                                    <label for="">Product Photo : </label>
-                                                    <p class="">
-                                                        <img src="{{ isset($product->photo) ? asset($product->photo) : asset('backend/assets/dist/img/avatar5.png') }}"
-                                                            style="height: 120px ; width : 120px ; object-fit : cover"
-                                                            alt="">
-                                                    </p>
+
+                                                <div class="">
+                                                    <label for="">Product Total Price : </label>
+                                                    <span class=""> {{ $purchase->price }}</span>
                                                 </div>
                                                 <div>
                                                     <label for="">Product Added by : </label>
-                                                    <p class=""> {{ $product->user->name }}</p>
+                                                    <span class=""> {{ $purchase->user->name }}</span>
                                                 </div>
                                                 <div>
                                                     <a href="{{ route('admin.product.all.index') }}"
@@ -80,13 +86,24 @@
                                             <div class="card-body">
                                                 <div>
                                                     <label for="">Product Status : </label>
-                                                    {!! $product->status
-                                                        ? '<span class="badge badge-primary">Active</span>'
-                                                        : '<span class="badge badge-danger">In Active</span>' !!}
+                                                    {!! $purchase->status
+                                                        ? '<span class="badge badge-primary">Approved</span>'
+                                                        : '<span class="badge badge-danger">Pending</span>' !!}
                                                 </div>
-                                                <div>
-                                                    <label for="">Product Quantity : </label>
-                                                    <span class="badge badge-info">{{ $product->quantity }}</span>
+                                                <div class="">
+                                                   
+                                                    <form
+                                                        action="{{ route('admin.product.purchase.status', ['status' => $purchase->id]) }}"
+                                                        method="post">
+                                                        @csrf
+
+                                                        {!! $purchase->status == 1
+                                                            ? '<button class="btn btn-danger">Confirm Not Approved</button>'
+                                                            : '<button class="btn btn-warning">Confirm Approve</button>' !!}
+
+
+                                                    </form>
+                                                    {{-- <span class="badge badge-info">{{ }}</span> --}}
                                                 </div>
                                             </div>
                                         </div>

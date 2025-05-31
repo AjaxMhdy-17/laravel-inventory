@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Purchase;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,25 +23,19 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $invoices = InvoiceDetail::query();
+            $invoices = Invoice::with(['invoice_details.product'])->orderBy('created_at', 'desc');
             return DataTables::eloquent($invoices)
                 ->addIndexColumn()
                 ->addColumn('name', function ($invoice) {
-                    return $invoice->product->name ?? 'N/A';
+                    return $invoice->user->name ?? 'N/A';
                 })
-                ->addColumn('category', function ($invoice) {
-                    return $invoice->category->name ?? 'N/A';
+                ->addColumn('num_of_product', function ($invoice) {
+                    return $invoice->invoice_description ?? 'N/A';
                 })
-                ->addColumn('quantity', function ($invoice) {
-                    return $invoice->selling_qty;
+                ->addColumn('invoice_description', function ($invoice) {
+                    return $invoice->invoice_description ?? 'N/A';
                 })
-                ->addColumn('unit_price', function ($invoice) {
-                    return $invoice->unit_price;
-                })
-                // ->addColumn('unit', function ($product) {
-                //     $unitName = optional($product->unit)->name ?? 'N/A';
-                //     return "<span>{$unitName}</span>";
-                // })
+
                 ->addColumn('created_at', function ($product) {
                     return Carbon::parse($product->created_at)->format('Y-m-d');
                 })
@@ -55,7 +50,7 @@ class InvoiceController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.product.invoice.show', ['invoice' => $invoice->id]) . '">View</a>
+                                <a class="dropdown-item" href="' . route('admin.product.invoice.show', ['invoice' => $invoice->invoice_details->id]) . '">View</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="' . route('admin.product.invoice.edit', ['invoice' => $invoice->id]) . '">Edit</a>
                                 <div class="dropdown-divider"></div>
@@ -219,30 +214,36 @@ class InvoiceController extends Controller
 
     public function show(string $id)
     {
-        //
+        $data['title'] = "Invoice Details";
+
+        $data['purchase'] = Purchase::with('user')->findOrFail($id);
+
+        return view('backend.invoice.view', $data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
+        $invoice = Invoice::findOrFail($id);
+        $invoice->delete();
+        InvoiceDetail::where('invoice_id', $invoice->id)->delete();
+        Payment::where('invoice_id', $invoice->id)->delete();
+        $notification = array(
+            'message' => "Invoice Deleted Successfully !",
+            'alert-type' => 'danger'
+        );
+        return back()->with($notification);
+        // $invoice_detail = new InvoiceDetail();
+        // $payment = new Payment();
     }
 }

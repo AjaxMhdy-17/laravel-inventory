@@ -11,13 +11,18 @@ class InvoiceDetail extends Model
     protected $guarded = [];
 
 
-    public function product(){
-        return $this->belongsTo(Product::class) ; 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 
-    public function category(){
-        return $this->belongsTo(Category::class) ; 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
-    
 
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 }

@@ -47,6 +47,12 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
     });
 
 
+    Route::prefix('invoice')->name('invoice.')->group(function () {
+        Route::resource('all', InvoiceController::class);
+        // Route::resource('category', CategoryController::class);
+    });
+
+
     Route::get('site-setting', [SiteSettingController::class, 'index'])->name('site-setting.index');
     Route::post('site-setting', [SiteSettingController::class, 'store'])->name('site-setting.store');
 

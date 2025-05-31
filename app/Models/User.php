@@ -57,10 +57,13 @@ class User extends Authenticatable
         return $query->withCount('blog')->orderByDesc('blog_count');
     }
 
-    public function purchase(){
-        return $this->hasMany(Purchase::class) ; 
+    public function purchase()
+    {
+        return $this->hasMany(Purchase::class);
     }
 
-    
-
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
 }

@@ -63,12 +63,11 @@
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Name</th>
-                                                            <th>Category</th>
-                                                            <th>Quantity</th>
-                                                            <th>Unit Price</th>
-                                                            <th>Selling Price</th>
-                                                            <th>Created At</th>
+                                                            <th>Invoice Added By</th>
+                                                            <th>Description</th>
+
+                                                            <th>Date</th>
+
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -104,7 +103,7 @@
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
-                        title: '#',
+                        title: 'Invoice No',
                         orderable: false,
                         searchable: false,
                         className: "text-center"
@@ -114,43 +113,28 @@
                         name: 'name'
                     },
                     {
-                        data: 'category',
-                        name: 'category'
+                        data: 'invoice_description',
+                        name: 'invoice_description',
+                        searchable: true,
                     },
-                    {
-                        data: 'quantity',
-                        name: 'quantity'
-                    },
-                    {
-                        data: 'unit_price',
-                        name: 'unit_price'
-                    },
-                    {
-                        data: 'selling_price',
-                        name: 'selling_price'
-                    },
+
+                    // {
+                    //     data: 'quantity',
+                    //     name: 'quantity'
+                    // },
+                    // {
+                    //     data: 'unit_price',
+                    //     name: 'unit_price'
+                    // },
+                    // {
+                    //     data: 'selling_price',
+                    //     name: 'selling_price'
+                    // },
                     {
                         data: 'created_at',
                         name: 'created_at',
                         className: "text-center",
                     },
-                    // {
-                    //     data: 'supplier',
-                    //     name: 'supplier',
-                    //     orderable: false,
-                    //     className: "text-center",
-                    // },
-                    // {
-                    //     data: 'category',
-                    //     name: 'category',
-                    //     orderable: false,
-                    //     className: "text-center",
-                    // },
-                    // {
-                    //     data: 'unit',
-                    //     name: 'unit',
-                    //     className: "text-center",
-                    // },
                     {
                         data: 'status',
                         name: 'status',

@@ -130,8 +130,21 @@
                                 </p>
                             </a>
                         </li>
+                    </ul>
+                </li>
 
 
+                <li
+                    class="nav-item {{ request()->routeIs('admin.customer.*') ? ' menu-is-opening menu-open active' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fa fa-address-book" aria-hidden="true"></i>
+                        <p>
+                            Invoice
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        
                         <li class="nav-item">
                             <a href="{{ route('admin.product.invoice.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.product.invoice*') ? 'active' : '' }}">
@@ -142,6 +155,14 @@
                             </a>
                         </li>
 
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.blog.tag.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tag</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
