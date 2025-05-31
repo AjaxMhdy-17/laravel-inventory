@@ -22,31 +22,32 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $products = Product::query();
-            return DataTables::eloquent($products)
+            $invoices = InvoiceDetail::query();
+            return DataTables::eloquent($invoices)
                 ->addIndexColumn()
-                ->addColumn('photo', function ($product) {
-                    $imageUrl = isset($product->photo) ? asset($product->photo) : asset('backend/assets/dist/img/avatar5.png');
-                    return '<img src="' . $imageUrl . '" alt="Photo" width="50" height="50">';
+                ->addColumn('name', function ($invoice) {
+                    return $invoice->product->name ?? 'N/A';
                 })
-                ->addColumn('supplier', function ($category) {
-                    return $category->suppliers->name;
+                ->addColumn('category', function ($invoice) {
+                    return $invoice->category->name ?? 'N/A';
                 })
-                ->addColumn('category', function ($product) {
-                    $categoryName = optional($product->category)->name ?? 'N/A';
-                    return "<span>{$categoryName}</span>";
+                ->addColumn('quantity', function ($invoice) {
+                    return $invoice->selling_qty;
                 })
-                ->addColumn('unit', function ($product) {
-                    $unitName = optional($product->unit)->name ?? 'N/A';
-                    return "<span>{$unitName}</span>";
+                ->addColumn('unit_price', function ($invoice) {
+                    return $invoice->unit_price;
                 })
+                // ->addColumn('unit', function ($product) {
+                //     $unitName = optional($product->unit)->name ?? 'N/A';
+                //     return "<span>{$unitName}</span>";
+                // })
                 ->addColumn('created_at', function ($product) {
                     return Carbon::parse($product->created_at)->format('Y-m-d');
                 })
-                ->addColumn('status', function ($product) {
-                    return $product->status == 1 ? "<span class='badge badge-primary'>Active</span>" : " <span class='badge badge-danger'>In Active</span>";
+                ->addColumn('status', function ($invoice) {
+                    return $invoice->status == 1 ? "<span class='badge badge-primary'>Active</span>" : " <span class='badge badge-danger'>In Active</span>";
                 })
-                ->addColumn('action', function ($product) {
+                ->addColumn('action', function ($invoice) {
                     return '
                        <div class="action">
                             <div class="dropdown">
@@ -54,11 +55,11 @@ class InvoiceController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.product.all.show', ['all' => $product->id]) . '">View</a>
+                                <a class="dropdown-item" href="' . route('admin.product.invoice.show', ['invoice' => $invoice->id]) . '">View</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="' . route('admin.product.all.edit', ['all' => $product->id]) . '">Edit</a>
+                                <a class="dropdown-item" href="' . route('admin.product.invoice.edit', ['invoice' => $invoice->id]) . '">Edit</a>
                                 <div class="dropdown-divider"></div>
-                                 <form class="delete-form" method="POST" action="' . route('admin.product.all.destroy', ['all' => $product->id]) . '">
+                                 <form class="delete-form" method="POST" action="' . route('admin.product.invoice.destroy', ['invoice' => $invoice->id]) . '">
                                     ' . csrf_field() . '
                                     ' . method_field("DELETE") . '
                                      <button type="submit" class="dropdown-item text-danger show-alert-delete-box">Delete</button>
@@ -112,7 +113,7 @@ class InvoiceController extends Controller
                         $discount = floatval($request->input('discountPrice'));
                         $paid = floatval($value);
 
-                        $netTotal = $total ;
+                        $netTotal = $total;
                         if ($paid > $netTotal) {
                             $fail('Paid amount cannot be greater than total price after discount.');
                         }

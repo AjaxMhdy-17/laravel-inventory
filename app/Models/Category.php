@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'status' , 'cleaned_name'];
+    protected $fillable = ['name', 'status', 'cleaned_name'];
 
 
     public function suppliers()
@@ -19,5 +19,15 @@ class Category extends Model
     public function product()
     {
         return $this->hasMany(Product::class, 'category_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function invoiceDetails()
+    {
+        return $this->hasMany(InvoiceDetail::class);
     }
 }

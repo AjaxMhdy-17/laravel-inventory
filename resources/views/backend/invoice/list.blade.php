@@ -64,10 +64,11 @@
                                                         <tr>
                                                             <th>#</th>
                                                             <th>Name</th>
-                                                            <th>Photo</th>
-                                                            <th>Supplier</th>
                                                             <th>Category</th>
-                                                            <th>Unit</th>
+                                                            <th>Quantity</th>
+                                                            <th>Unit Price</th>
+                                                            <th>Selling Price</th>
+                                                            <th>Created At</th>
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -113,27 +114,43 @@
                         name: 'name'
                     },
                     {
-                        data: 'photo',
-                        name: 'photo',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'supplier',
-                        name: 'supplier',
-                        orderable: false,
-                        className: "text-center",
-                    },
-                    {
                         data: 'category',
-                        name: 'category',
-                        orderable: false,
-                        className: "text-center",
+                        name: 'category'
                     },
                     {
-                        data: 'unit',
-                        name: 'unit',
+                        data: 'quantity',
+                        name: 'quantity'
+                    },
+                    {
+                        data: 'unit_price',
+                        name: 'unit_price'
+                    },
+                    {
+                        data: 'selling_price',
+                        name: 'selling_price'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
                         className: "text-center",
                     },
+                    // {
+                    //     data: 'supplier',
+                    //     name: 'supplier',
+                    //     orderable: false,
+                    //     className: "text-center",
+                    // },
+                    // {
+                    //     data: 'category',
+                    //     name: 'category',
+                    //     orderable: false,
+                    //     className: "text-center",
+                    // },
+                    // {
+                    //     data: 'unit',
+                    //     name: 'unit',
+                    //     className: "text-center",
+                    // },
                     {
                         data: 'status',
                         name: 'status',
@@ -211,6 +228,7 @@
         th.sorting_disabled::after {
             content: "" !important;
         }
+
         .card__header {
             display: flex;
             justify-content: space-between;
