@@ -137,20 +137,23 @@
                 <li
                     class="nav-item {{ request()->routeIs('admin.invoice.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fa fa-address-book" aria-hidden="true"></i>
+                        {{-- <i class=" fa fa-address-book" aria-hidden="true"></i> --}}
+                        {{-- <i class="fa fa-ioxhost  nav-icon" aria-hidden="true"></i> --}}
+                        {{-- <i class="nav-icon fas fa-snowflake-o" aria-hidden="true"></i> --}}
+                        <i class="nav-icon fa fa-window-maximize" aria-hidden="true"></i>
                         <p>
                             Invoice
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        
+
                         <li class="nav-item">
                             <a href="{{ route('admin.invoice.all.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.invoice.all*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                <i class="nav-icon far fa-circle"></i>
                                 <p>
-                                    Invoice
+                                    All Invoice
                                 </p>
                             </a>
                         </li>

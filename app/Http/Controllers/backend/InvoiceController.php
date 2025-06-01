@@ -212,9 +212,11 @@ class InvoiceController extends Controller
     {
         $data['title'] = "Invoice Details";
 
-        $data['invoice'] = Invoice::with('user')->findOrFail($id);
+        $data['invoice'] = Invoice::with(['user','payment.customer','invoice_details.product.suppliers'])->findOrFail($id);
 
-        // return view('backend.invoice.view', $data);
+        // dd($data['invoice']);
+
+        return view('backend.invoice.view', $data);
     }
 
     public function destroy(string $id)

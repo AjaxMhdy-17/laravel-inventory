@@ -29,7 +29,7 @@
                             <div class="card__header">
                                 <h3 class="card-title">{{ $title }}</h3>
                                 <div>
-                                    <a href="{{ route('admin.product.purchase.index') }}" class="btn btn-info">Back</a>
+                                    <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-info">Back</a>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -40,74 +40,61 @@
                                         <div class="col-sm-12 col-md-6"></div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="card-body">
-                                                <div class="">
-                                                    <label for="">Product Suppler Name : </label>
-                                                    <span class=""> {{ $purchase->supplier }}</span>
-                                                </div>
-                                                <div class="">
-                                                    <label for="">Product Category Name : </label>
-                                                    <span class=""> {{ $purchase->category }}</span>
-                                                </div>
-                                                <div class="">
-                                                    <label for="">Product Name : </label>
-                                                    <span class=""> {{ $purchase->product }}</span>
-                                                </div>
-                                                <div class="">
-                                                    <label for="">Product Description : </label>
-                                                    <span class=""> {{ $purchase->description }}</span>
-                                                </div>
-                                                <div class="">
-                                                    <label for="">Product Buying Quantity : </label>
-                                                    <span class=""> {{ $purchase->buying_qty }}</span>
-                                                </div>
-
-                                                <div class="">
-                                                    <label for="">Product Unit Price : </label>
-                                                    <span class=""> {{ $purchase->unit_price }}</span>
-                                                </div>
-
-                                                <div class="">
-                                                    <label for="">Product Total Price : </label>
-                                                    <span class=""> {{ $purchase->price }}</span>
-                                                </div>
-                                                <div>
-                                                    <label for="">Product Added by : </label>
-                                                    <span class=""> {{ $purchase->user->name }}</span>
-                                                </div>
-                                                <div>
-                                                    <a href="{{ route('admin.product.all.index') }}"
-                                                        class="btn btn-info">Back</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="card-body">
-                                                <div>
-                                                    <label for="">Product Status : </label>
-                                                    {!! $purchase->status
-                                                        ? '<span class="badge badge-primary">Approved</span>'
-                                                        : '<span class="badge badge-danger">Pending</span>' !!}
-                                                </div>
-                                                <div class="">
-                                                   
-                                                    <form
-                                                        action="{{ route('admin.product.purchase.status', ['status' => $purchase->id]) }}"
-                                                        method="post">
-                                                        @csrf
-
-                                                        {!! $purchase->status == 1
-                                                            ? '<button class="btn btn-danger">Confirm Not Approved</button>'
-                                                            : '<button class="btn btn-warning">Confirm Approve</button>' !!}
-
-
-                                                    </form>
-                                                    {{-- <span class="badge badge-info">{{ }}</span> --}}
-                                                </div>
-                                            </div>
+                                        <div class="col-12">
+                                            <table class="table table-dark">
+                                                <thead>
+                                                    <tr>
+                                                        {{-- <th scope="col"> </th>
+                                                        <th scope="col"> : </th>
+                                                        <th scope="col"> : </th>
+                                                        <th scope="col"> : </th> --}}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Customer Info :</th>
+                                                        <td>Name : {{ $invoice->payment->customer->name }}</td>
+                                                        <td>Phone : {{ $invoice->payment->customer->phone }}</td>
+                                                        <td>Email : {{ $invoice->payment->customer->email }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row"></th>
+                                                        <td>Description : Everything is done</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <table class="table table-dark">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="">SL</th>
+                                                        <th scope="">Category</th>
+                                                        <th scope="">Current Stock</th>
+                                                        <th scope="">Quantity</th>
+                                                        <th scope="">Unit Price</th>
+                                                        <th scope="">Total Price</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>5</th>
+                                                        <td>Name : {{ $invoice->payment->customer->name }}</td>
+                                                        <td>Phone : {{ $invoice->payment->customer->phone }}</td>
+                                                        <td>Email : {{ $invoice->payment->customer->email }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row"></th>
+                                                        <td>Description : Everything is done</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <!-- /.card-body -->
