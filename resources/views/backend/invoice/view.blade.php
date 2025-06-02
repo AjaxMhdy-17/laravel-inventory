@@ -71,24 +71,52 @@
                                             <table class="table table-dark">
                                                 <thead>
                                                     <tr>
-                                                        <th scope="">SL</th>
-                                                        <th scope="">Category</th>
-                                                        <th scope="">Current Stock</th>
-                                                        <th scope="">Quantity</th>
-                                                        <th scope="">Unit Price</th>
-                                                        <th scope="">Total Price</th>
+                                                        <th>SL</th>
+                                                        <th>Category</th>
+                                                        <th>Product Name</th>
+                                                        <th>Current Stock</th>
+                                                        <th>Quantity</th>
+                                                        <th>Unit Price</th>
+                                                        <th class="text-right">Total Price</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+
+                                                    @foreach ($invoice_details->get() as $idx => $details)
+                                                        <tr>
+                                                            <th>{{ $idx }}</th>
+                                                            <td>{{ $details->category->name }}</td>
+                                                            <td>{{ $details->product->name }}</td>
+                                                            <td>{{ $details->product->quantity }}</td>
+                                                            <td>{{ $details->selling_qty }}</td>
+                                                            <td>{{ $details->unit_price }}</td>
+                                                            <td class="text-right">{{ $details->selling_price }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                     <tr>
-                                                        <th>5</th>
-                                                        <td>Name : {{ $invoice->payment->customer->name }}</td>
-                                                        <td>Phone : {{ $invoice->payment->customer->phone }}</td>
-                                                        <td>Email : {{ $invoice->payment->customer->email }}</td>
+                                                        <td colspan="3">Payment Status</td>
+                                                        <td colspan="4" class="text-right">
+                                                            {{ $invoice->payment->paid_status }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row"></th>
-                                                        <td>Description : Everything is done</td>
+                                                        <td colspan="3">Sub Total</td>
+                                                        <td colspan="4" class="text-right">
+                                                            {{ $invoice->payment->total_amount }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3">Discount</td>
+                                                        <td colspan="4" class="text-right">
+                                                            {{ $invoice->payment->discount_amount }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3">Paid Amount</td>
+                                                        <td colspan="4" class="text-right">
+                                                            {{ $invoice->payment->total_amount_after_discount }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3">Due Amount</td>
+                                                        <td colspan="4" class="text-right">
+                                                            {{ $invoice->payment->due_amount }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

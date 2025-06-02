@@ -23,7 +23,7 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $invoices = Invoice::with(['user' , 'invoice_details'])->orderBy('created_at', 'desc');
+            $invoices = Invoice::with(['user', 'invoice_details'])->orderBy('created_at', 'desc');
             return DataTables::eloquent($invoices)
                 ->addIndexColumn()
                 ->addColumn('name', function ($invoice) {
@@ -46,9 +46,7 @@ class InvoiceController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', ['all' => $invoice->invoice_details->id]) . '">View</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="' . route('admin.invoice.all.edit', ['all' => $invoice->id]) . '">Edit</a>
+                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', ['all' => $invoice->id]) . '">View</a>
                                 <div class="dropdown-divider"></div>
                                  <form class="delete-form" method="POST" action="' . route('admin.invoice.all.destroy', ['all' => $invoice->id]) . '">
                                     ' . csrf_field() . '
@@ -89,11 +87,11 @@ class InvoiceController extends Controller
                 'required',
                 'numeric',
                 'min:0',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($value > $request->input('totalPrice')) {
-                        $fail('Discount cannot be greater than total price.');
-                    }
-                }
+                // function ($attribute, $value, $fail) use ($request) {
+                //     if ($value > $request->input('totalPrice')) {
+                //         $fail('Discount cannot be greater than total price.');
+                //     }
+                // }
             ],
             'paid_status' => 'required',
             'paid_amount' => [
@@ -212,9 +210,8 @@ class InvoiceController extends Controller
     {
         $data['title'] = "Invoice Details";
 
-        $data['invoice'] = Invoice::with(['user','payment.customer','invoice_details.product.suppliers'])->findOrFail($id);
-
-        // dd($data['invoice']);
+        $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers' , 'invoice_details.category'])->findOrFail($id);
+        $data['invoice_details'] = $data['invoice']->invoice_details;
 
         return view('backend.invoice.view', $data);
     }
