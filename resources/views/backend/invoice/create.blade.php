@@ -213,8 +213,7 @@
                                                                     id="discountPrice"
                                                                     style="width: 200px; padding-left: 5px;"
                                                                     placeholder="Discount Price"
-                                                                    value="{{old('discountPrice')}}"
-                                                                    />
+                                                                    value="{{ old('discountPrice', 0) }}" />
                                                                 <p>
                                                                     @error('discountPrice')
                                                                         {{ $message }}
@@ -506,8 +505,29 @@
                 const quantity = selectedOption.data('quantity') || 0;
                 $('#product_stock').val(quantity);
             });
+
+
+            $('#purchaseTable').on('focus', '.unit', function() {
+                let $row = $(this).closest('tr');
+                let product_id = $row.find('input[name*="[product_id]"]').val();
+        
+                let product_stock = $row.find('.product_stock'); 
+                if (product_id) {
+                    $.ajax({
+                        url: "{{ route('admin.product.purchase.unit.getProduct') }}",
+                        type: "GET",
+                        data: {
+                            product_id: product_id
+                        },
+                        success: function(data) {
+                            $('#product_stock').val(data.stock);
+                        }
+                    });
+                }
+            });
         });
     </script>
+
 
     <script>
         $('#product_id').on('change', function() {
@@ -588,11 +608,11 @@
             <td>
                 <input type="hidden" name="purchase_items[${rowIndex}][supplier_id]" value="${supplierId}">
                 <input type="hidden" name="purchase_items[${rowIndex}][supplier]" value="${supplierName}">
-                <input type="hidden" name="purchase_items[${rowIndex}][category_id]" value="${categoryId}">
+                <input type="hidden" id="category_id" name="purchase_items[${rowIndex}][category_id]" value="${categoryId}">
                 <input type="text" name="purchase_items[${rowIndex}][category]" class="form-control-plaintext" readonly value="${categoryName}" style="width:120px;">
             </td>
             <td>
-                <input type="hidden" name="purchase_items[${rowIndex}][product_id]" value="${productId}">
+                <input type="hidden" id="unit_product" name="purchase_items[${rowIndex}][product_id]" value="${productId}">
                 <input type="text" name="purchase_items[${rowIndex}][product]" class="form-control-plaintext" readonly value="${productName}" style="width:160px;">
             </td>
             <td>
@@ -615,10 +635,6 @@
                 rowIndex++;
             });
 
-            $('#purchaseTable').on('input', '.unit, .unitPrice', function() {
-                let $row = $(this).closest('tr');
-                calculateRowPrice($row);
-            });
 
             $('#purchaseTable').on('click', '.btnRemoveRow', function() {
                 $(this).closest('tr').remove();
@@ -628,59 +644,27 @@
                 }
             });
 
-            // Listen to discount field changes
             $('#discountPrice').on('input', function() {
                 updateTotalPrice();
             });
 
+
+            $('#purchaseTable').on('input', '.unit, .unitPrice', function() {
+                let $row = $(this).closest('tr');
+                let $unitInput = $row.find('.unit');
+                let enteredQty = parseFloat($unitInput.val()) || 0;
+                let availableStock = parseFloat($('#product_stock').val()) || 0;
+                if ($(this).hasClass('unit') && enteredQty > availableStock) {
+                    alert('Entered PSC/KG exceeds available stock: ' + availableStock);
+                    $unitInput.val('');
+                    $row.find('.rowPrice').val('0.00');
+                    updateTotalPrice();
+                    return;
+                }
+                calculateRowPrice($row);
+            });
             updateTotalPrice();
         });
-    </script>
-
-
-    <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const discountInput = document.getElementById('discountPrice');
-        //     const totalPriceInput = document.getElementById('totalPrice');
-        //     const paidInput = document.getElementById('paid_amount');
-        //     const form = document.getElementById('purchaseForm');
-
-        //     function cleanNumber(val) {
-        //         return parseFloat(val?.toString().trim().replace(/,/g, '')) || 0;
-        //     }
-
-        //     function validateDiscountAndPaid(showAlerts = true) {
-        //         const total = cleanNumber(totalPriceInput.value);
-        //         const discount = cleanNumber(discountInput.value);
-        //         const paid = cleanNumber(paidInput?.value);
-        //         const netTotal = total ;
-        //         if (discount > total) {
-        //             if (showAlerts) alert('❌ Discount cannot be greater than Total Price.');
-        //             discountInput.value = '';
-        //             return false;
-        //         }
-
-        //         if (paid > netTotal) {
-        //             if (showAlerts) {
-        //                 alert(`❌ Paid amount (${paid}) cannot be greater than Total After Discount (${netTotal}).`);
-        //             }
-        //             paidInput.value = '';
-        //             return false;
-        //         }
-
-        //         return true;
-        //     }
-        //     discountInput.addEventListener('input', () => validateDiscountAndPaid(true));
-        //     if (paidInput) paidInput.addEventListener('input', () => validateDiscountAndPaid(true));
-        //     if (form) {
-        //         form.addEventListener('submit', function(e) {
-        //             if (!validateDiscountAndPaid(false)) {
-        //                 e.preventDefault();
-        //                 alert('Please fix discount or paid amount errors before submitting.');
-        //             }
-        //         });
-        //     }
-        // });
     </script>
 @endpush
 

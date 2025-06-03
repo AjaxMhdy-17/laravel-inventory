@@ -88,6 +88,25 @@ class PurchaseController extends Controller
         );
     }
 
+    public function getUnitProduct(Request $request)
+    {
+        $product = Product::findOrFail($request->product_id);
+        return response()->json([
+            'stock' => $product->quantity
+        ]);
+    }
+
+
+    // public function getProduct(Request $request)
+    // {
+    //     return response()->json([
+    //             'id' => $product->id,
+    //             'name' => $product->name,
+    //             'quantity' => $product->quantity,
+    //     ]);
+    // }
+
+
 
     public function create()
     {

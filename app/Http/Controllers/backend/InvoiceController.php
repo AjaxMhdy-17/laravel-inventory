@@ -136,6 +136,7 @@ class InvoiceController extends Controller
             'purchase_items.*.category.required' => 'sometimes.',
             'purchase_items.*.product.required' => 'sometimes.',
             'purchase_items.*.unit.required' => 'required.',
+            'purchase_items.*.unit.min' => 'this unit is 0.',
             'purchase_items.*.unit_price.required' => 'required.',
             'purchase_items.*.price.required' => 'required.',
         ]);
