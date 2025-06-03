@@ -29,7 +29,8 @@
                             <div class="card__header">
                                 <h3 class="card-title">{{ $title }}</h3>
                                 <div>
-                                    <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-info">Back</a>
+                                    <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-info mr-3">Print</a>
+                                    <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-primary">Back</a>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -101,7 +102,7 @@
                                                     <tr>
                                                         <td colspan="3">Sub Total</td>
                                                         <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->total_amount }}</td>
+                                                            {{ $invoice->payment->total_amount + $invoice->payment->discount_amount }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Discount</td>
@@ -111,7 +112,7 @@
                                                     <tr>
                                                         <td colspan="3">Paid Amount</td>
                                                         <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->total_amount_after_discount }}</td>
+                                                            {{ $invoice->payment->paid_amount }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Due Amount</td>

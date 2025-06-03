@@ -148,6 +148,9 @@ class InvoiceController extends Controller
         DB::transaction(function () use ($val, $data, $invoice) {
             if ($invoice->save()) {
                 foreach ($data['purchase_items'] as $idx => $item) {
+                    $product = Product::findOrFail($item['product_id']);
+                    $product['quantity'] = (string)((int)$product['quantity'] - (int) $item['unit']);
+                    $product->save();
                     $invoice_detail = new InvoiceDetail();
                     $invoice_detail->status = 0;
                     $invoice_detail->product_id = $item['product_id'];
@@ -159,6 +162,7 @@ class InvoiceController extends Controller
                     $invoice_detail->description =  $item['description'];
                     $invoice_detail->save();
                 }
+
                 if ($val['customer_id'] == 0) {
                     $customer = new Customer();
                     $customer->name = $val['name'];
@@ -196,6 +200,7 @@ class InvoiceController extends Controller
                 $payment->save();
             }
         });
+
         $notification = array(
             'message' => "Invoice Added Successfully !",
             'alert-type' => 'success'
@@ -210,8 +215,8 @@ class InvoiceController extends Controller
     {
         $data['title'] = "Invoice Details";
 
-        $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers' , 'invoice_details.category'])->findOrFail($id);
-        $data['invoice_details'] = $data['invoice']->invoice_details;
+        $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers', 'invoice_details.category'])->findOrFail($id);
+        $data['invoice_details'] = $data['invoice']->invoice_details->where('invoice_id', $id);
 
         return view('backend.invoice.view', $data);
     }
