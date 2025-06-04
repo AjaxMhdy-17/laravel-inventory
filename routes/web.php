@@ -49,6 +49,10 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
 
 
     Route::prefix('invoice')->name('invoice.')->group(function () {
+
+        Route::post('{id}/approve', [InvoiceController::class, 'approveInvoice'])->name('approve.invoice');
+        Route::get('pending/all', [InvoiceController::class, 'pendingInvoice'])->name('pending.invoice');
+        Route::get('approved/all', [InvoiceController::class, 'approvedInvoice'])->name('approved.invoice');
         Route::resource('all', InvoiceController::class);
         // Route::resource('category', CategoryController::class);
     });

@@ -24,42 +24,7 @@ class InvoiceController extends Controller
     {
         if ($request->ajax()) {
             $invoices = Invoice::with(['user', 'invoice_details'])->orderBy('created_at', 'desc');
-            return DataTables::eloquent($invoices)
-                ->addIndexColumn()
-                ->addColumn('name', function ($invoice) {
-                    return $invoice->user->name ?? 'N/A';
-                })
-                ->addColumn('invoice_description', function ($invoice) {
-                    return $invoice->invoice_description ?? 'N/A';
-                })
-                ->addColumn('created_at', function ($product) {
-                    return Carbon::parse($product->created_at)->format('Y-m-d');
-                })
-                ->addColumn('status', function ($invoice) {
-                    return $invoice->status == 1 ? "<span class='badge badge-primary'>Active</span>" : " <span class='badge badge-danger'>In Active</span>";
-                })
-                ->addColumn('action', function ($invoice) {
-                    return '
-                       <div class="action">
-                            <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
-                                More
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', ['all' => $invoice->id]) . '">View</a>
-                                <div class="dropdown-divider"></div>
-                                 <form class="delete-form" method="POST" action="' . route('admin.invoice.all.destroy', ['all' => $invoice->id]) . '">
-                                    ' . csrf_field() . '
-                                    ' . method_field("DELETE") . '
-                                     <button type="submit" class="dropdown-item text-danger show-alert-delete-box">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                       </div>
-                    ';
-                })
-                ->rawColumns(['action', 'status'])
-                ->make(true);
+            return $this->table($invoices);
         }
         $data['title'] = "Invoice";
         return view('backend.invoice.list', $data);
@@ -233,5 +198,81 @@ class InvoiceController extends Controller
             'alert-type' => 'danger'
         );
         return back()->with($notification);
+    }
+
+
+    public function approveInvoice($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+        $invoice->status = 1;
+        $invoice->save();
+        $notification = array(
+            'message' => "Invoice Approved Successfully !",
+            'alert-type' => 'success'
+        );
+        return back()->with($notification);
+    }
+
+    public function pendingInvoice(Request $request)
+    {
+        if ($request->ajax()) {
+            $invoices = Invoice::with(['user', 'invoice_details'])->orderBy('created_at', 'desc')->where('status', 1);
+            return $this->table($invoices);
+        }
+        $data['title'] = "Pending Invoice";
+        return view('backend.invoice.paidList', $data);
+    }
+
+    public function approvedInvoice(Request $request)
+    {
+        if ($request->ajax()) {
+            $invoices = Invoice::with(['user', 'invoice_details'])->orderBy('created_at', 'desc')->where('status', 0);
+            return $this->table($invoices);
+        }
+        $data['title'] = "Paid Invoice";
+        return view('backend.invoice.pendingList', $data);
+    }
+
+
+
+
+    public function table($invoices)
+    {
+        return DataTables::eloquent($invoices)
+            ->addIndexColumn()
+            ->addColumn('name', function ($invoice) {
+                return $invoice->user->name ?? 'N/A';
+            })
+            ->addColumn('invoice_description', function ($invoice) {
+                return $invoice->invoice_description ?? 'N/A';
+            })
+            ->addColumn('created_at', function ($product) {
+                return Carbon::parse($product->created_at)->format('Y-m-d');
+            })
+            ->addColumn('status', function ($invoice) {
+                return $invoice->status == 1 ? "<span class='badge badge-primary'>Paid</span>" : " <span class='badge badge-danger'>Not Paid</span>";
+            })
+            ->addColumn('action', function ($invoice) {
+                return '
+                       <div class="action">
+                            <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                More
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', ['all' => $invoice->id]) . '">View</a>
+                                <div class="dropdown-divider"></div>
+                                 <form class="delete-form" method="POST" action="' . route('admin.invoice.all.destroy', ['all' => $invoice->id]) . '">
+                                    ' . csrf_field() . '
+                                    ' . method_field("DELETE") . '
+                                     <button type="submit" class="dropdown-item text-danger show-alert-delete-box">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                       </div>
+                    ';
+            })
+            ->rawColumns(['action', 'status'])
+            ->make(true);
     }
 }

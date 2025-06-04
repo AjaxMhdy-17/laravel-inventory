@@ -158,6 +158,27 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route('admin.invoice.approved.invoice') }}"
+                                class="nav-link {{ request()->routeIs('admin.invoice.approved.invoice') ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Paid Invoice
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.invoice.pending.invoice') }}"
+                                class="nav-link {{ request()->routeIs('admin.invoice.pending.invoice') ? 'active' : '' }}">
+                                <i class="nav-icon far fa-circle"></i>
+                                <p>
+                                    Pending Invoice
+                                </p>
+                            </a>
+                        </li>
+
+
 
                         <li class="nav-item">
                             <a href="{{ route('admin.blog.tag.index') }}"

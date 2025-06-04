@@ -29,12 +29,22 @@
                             <div class="card__header">
                                 <h3 class="card-title">{{ $title }}</h3>
                                 <div>
-                                    <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-info mr-3">Print</a>
+                                    Invoice Number : {{ $invoice->invoice_no }}
+                                </div>
+                                <div>
+                                    <a href="#" class="btn btn-info mr-3"
+                                        onclick="event.preventDefault(); document.getElementById('print-form-{{ $invoice->id }}').submit();">Approve</a>
+
+                                    <form id="print-form-{{ $invoice->id }}"
+                                        action="{{ route('admin.invoice.approve.invoice', ['id' => $invoice->id]) }}"
+                                        method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
                                     <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-primary">Back</a>
                                 </div>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card--body">
+                            <div class="card-body">
                                 <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4">
                                     <div class="row">
                                         <div class="col-sm-12 col-md-6"></div>
@@ -60,7 +70,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th scope="row"></th>
-                                                        <td>Description : Everything is done</td>
+                                                        <td>Description : {!!$invoice->status == 1 ? " <span class='badge badge-success'>Paid</span>" : "<span class='badge badge-warning'>Not Paid</span>" !!}  </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -102,7 +112,8 @@
                                                     <tr>
                                                         <td colspan="3">Sub Total</td>
                                                         <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->total_amount + $invoice->payment->discount_amount }}</td>
+                                                            {{ $invoice->payment->total_amount + $invoice->payment->discount_amount }}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">Discount</td>
@@ -121,6 +132,14 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-info">
+                                                Print
+                                            </button>
                                         </div>
                                     </div>
 
