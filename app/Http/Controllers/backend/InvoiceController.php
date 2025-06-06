@@ -9,8 +9,6 @@ use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\Purchase;
-use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -114,9 +112,6 @@ class InvoiceController extends Controller
         DB::transaction(function () use ($val, $data, $invoice) {
             if ($invoice->save()) {
                 foreach ($data['purchase_items'] as $idx => $item) {
-                    $product = Product::findOrFail($item['product_id']);
-                    $product['quantity'] = (string)((int)$product['quantity'] - (int) $item['unit']);
-                    $product->save();
                     $invoice_detail = new InvoiceDetail();
                     $invoice_detail->status = 0;
                     $invoice_detail->product_id = $item['product_id'];
@@ -180,7 +175,6 @@ class InvoiceController extends Controller
     public function show(string $id)
     {
         $data['title'] = "Invoice Details";
-
         $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers', 'invoice_details.category'])->findOrFail($id);
         $data['invoice_details'] = $data['invoice']->invoice_details->where('invoice_id', $id);
 
@@ -203,9 +197,18 @@ class InvoiceController extends Controller
 
     public function approveInvoice($id)
     {
-        $invoice = Invoice::findOrFail($id);
-        $invoice->status = 1;
-        $invoice->save();
+        $invoice = Invoice::with('invoice_details')->findOrFail($id);
+        // $invoice->status = 1;
+        // $invoice->save();
+
+        $ids = $invoice->invoice_details->pluck('product_id');
+        $products = Product::whereIn('id', $ids)->orderBy('id')->get();
+        $invoice_details = $invoice->invoice_details->sortBy('product_id')->values();
+
+        foreach ($products as $idx => $product) {
+            $product['quantity'] = (string)((int)$product['quantity'] - (int) $invoice_details[$idx]['selling_qty']);
+            $product->save();
+        }
         $notification = array(
             'message' => "Invoice Approved Successfully !",
             'alert-type' => 'success'

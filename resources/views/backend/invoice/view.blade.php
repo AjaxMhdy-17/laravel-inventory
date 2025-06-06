@@ -93,7 +93,7 @@
                                                 </thead>
                                                 <tbody>
 
-                                                    @foreach ($invoice_details->get() as $idx => $details)
+                                                    @foreach ($invoice_details as $idx => $details)
                                                         <tr>
                                                             <th>{{ $idx }}</th>
                                                             <td>{{ $details->category->name }}</td>
