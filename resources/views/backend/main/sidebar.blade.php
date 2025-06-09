@@ -178,13 +178,11 @@
                             </a>
                         </li>
 
-
-
                         <li class="nav-item">
-                            <a href="{{ route('admin.blog.tag.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.invoice.daily.invoice.form') }}"
+                                class="nav-link {{ request()->routeIs('admin.invoice.daily.invoice*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Tag</p>
+                                <p>Daily Invoice Report</p>
                             </a>
                         </li>
                     </ul>

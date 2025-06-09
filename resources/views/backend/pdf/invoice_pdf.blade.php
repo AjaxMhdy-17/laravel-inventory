@@ -27,27 +27,24 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card__header">
-                                <h3 class="card-title">{{ $title }}</h3>
                                 <div>
-                                    Invoice Number : {{ $invoice->invoice_no }}
+                                    <h3>
+                                        Shop Name Invoice
+                                    </h3>
+                                    <p>
+                                        Shop Address
+                                    </p>
+                                    <p>
+                                        shop@mail.com
+                                    </p>
                                 </div>
                                 <div>
-
-                                    {!! $invoice->status == 0
-                                        ? '<a href="#" class="btn btn-info mr-3"
-                                            onclick="event.preventDefault(); document.getElementById(\'print-form-' .
-                                            $invoice->id .
-                                            '\').submit();">
-                                            Approve
-                                          </a>'
-                                        : '<a href="#" class="btn btn-info mr-3">Already Approved</a>' !!}
-
-                                    <form id="print-form-{{ $invoice->id }}"
-                                        action="{{ route('admin.invoice.approve.invoice', ['id' => $invoice->id]) }}"
-                                        method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
-                                    <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-primary">Back</a>
+                                    <p>
+                                        Invoice Date
+                                    </p>
+                                    <p>
+                                        20/12/2003
+                                    </p>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -57,6 +54,7 @@
                                         <div class="col-sm-12 col-md-6"></div>
                                         <div class="col-sm-12 col-md-6"></div>
                                     </div>
+
                                     <div class="row">
                                         <div class="col-12">
                                             <table class="table table-dark">
@@ -146,17 +144,15 @@
 
                                     <div class="row">
                                         <div class="col-12">
-                                            <a class="btn btn-info" href="{{route('admin.invoice.print',['id' => $invoice->id])}}">
-                                                Print 
-                                            </a>
+                                            <button id="printButton" class="btn btn-info">
+                                                Print
+                                            </button>
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                 </div>
             </div>
@@ -169,6 +165,15 @@
 
 @push('css')
     <style>
+        @media print {
+            #printButton {
+                display: none;
+            }
+        }
+        p {
+            margin: 0;
+        }
+
         th.sorting_disabled::before,
         th.sorting_disabled::after {
             content: "" !important;
@@ -190,4 +195,13 @@
             left: -50px !important;
         }
     </style>
+@endpush
+
+@push('js')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#printButton').on('click', function() {
+            window.print();
+        });
+    </script>
 @endpush

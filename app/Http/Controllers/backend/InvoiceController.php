@@ -198,17 +198,28 @@ class InvoiceController extends Controller
     public function approveInvoice($id)
     {
         $invoice = Invoice::with('invoice_details')->findOrFail($id);
-        // $invoice->status = 1;
-        // $invoice->save();
 
-        $ids = $invoice->invoice_details->pluck('product_id');
-        $products = Product::whereIn('id', $ids)->orderBy('id')->get();
-        $invoice_details = $invoice->invoice_details->sortBy('product_id')->values();
+        DB::transaction(function () use ($invoice) {
+            $invoice->status = 1;
+            $invoice->save();
+            $ids = $invoice->invoice_details->pluck('product_id');
+            $products = Product::whereIn('id', $ids)->orderBy('id')->get();
+            $invoice_details = $invoice->invoice_details->sortBy('product_id')->values();
+            foreach ($products as $idx => $product) {
 
-        foreach ($products as $idx => $product) {
-            $product['quantity'] = (string)((int)$product['quantity'] - (int) $invoice_details[$idx]['selling_qty']);
-            $product->save();
-        }
+                if ((int)$product['quantity'] < (int)$invoice_details[$idx]['selling_qty']) {
+                    $notification = array(
+                        'message' => "Insufficient Stock !",
+                        'alert-type' => 'warning'
+                    );
+                    return back()->with($notification);
+                }
+
+                $product['quantity'] = (string)((int)$product['quantity'] - (int) $invoice_details[$idx]['selling_qty']);
+                $product->save();
+            }
+        });
+
         $notification = array(
             'message' => "Invoice Approved Successfully !",
             'alert-type' => 'success'
@@ -236,6 +247,30 @@ class InvoiceController extends Controller
         return view('backend.invoice.pendingList', $data);
     }
 
+
+    public function dailyInvoiceForm()
+    {
+        $data['title'] = "Daily Invoice";
+        $id = 64;
+        $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers', 'invoice_details.category'])->findOrFail($id);
+        $data['invoice_details'] = $data['invoice']->invoice_details->where('invoice_id', $id);
+
+        return view('backend.invoice.dailyInvoiceForm', $data);
+    }
+
+
+    public function dailyInvoice(Request $request)
+    {
+        $data = $request->validate([
+            'start_date' => 'required',
+            'end_date' => 'required',
+        ]);
+
+        dd($data);
+
+        // Example: Filter data between dates
+        // $data = YourModel::whereBetween('created_at', [$startDate, $endDate])->get();
+    }
 
 
 
