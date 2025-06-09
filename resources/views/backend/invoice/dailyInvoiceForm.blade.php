@@ -25,7 +25,7 @@
             <div class="container-fluid">
                 <div class="card">
                     <div class="card-header">
-                        <form action="{{ route('admin.invoice.daily.invoice') }}" method="POST">
+                        <form action="{{ route('admin.invoice.daily.invoice') }}" method="GET">
                             @csrf
                             <div class="row">
                                 <div class="col-md-4">

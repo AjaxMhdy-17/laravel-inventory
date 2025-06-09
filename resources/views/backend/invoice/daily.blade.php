@@ -37,13 +37,17 @@
                                     <p>
                                         shop@mail.com
                                     </p>
+                                    <p>
+                                        Date Range : From <span class="badge badge-info">{{ $start_date }}</span> To <span
+                                            class="badge badge-info">{{ $end_date }}</span>
+                                    </p>
                                 </div>
                                 <div>
                                     <p>
                                         Invoice Date
                                     </p>
                                     <p>
-                                        20/12/2003
+                                        {{ now()->format('Y-m-d') }}
                                     </p>
                                 </div>
                             </div>
@@ -56,29 +60,46 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-12">
+                                        <div class="col-12 table-responsive">
                                             <table class="table table-dark">
                                                 <thead>
                                                     <tr>
-                                                        {{-- <th scope="col"> </th>
-                                                        <th scope="col"> : </th>
-                                                        <th scope="col"> : </th>
-                                                        <th scope="col"> : </th> --}}
+                                                        <th>SL</th>
+                                                        <th>Customer Name</th>
+                                                        <th>Invoice No</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                        <th>Description</th>
+                                                        <th>Paid</th>
+                                                        <th>Due</th>
+                                                        <th>Total Amount</th>
+                                                        <th>Details</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <th scope="row">Customer Info :</th>
-                                                        <td>Name : {{ $invoice->payment->customer->name }}</td>
-                                                        <td>Phone : {{ $invoice->payment->customer->phone }}</td>
-                                                        <td>Email : {{ $invoice->payment->customer->email }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row"></th>
-                                                        <td>Description : {!! $invoice->status == 1
-                                                            ? " <span class='badge badge-success'>Paid</span>"
-                                                            : "<span class='badge badge-warning'>Not Paid</span>" !!} </td>
-                                                    </tr>
+                                                    @forelse ($invoices as $idx =>  $invoice)
+                                                        <tr>
+                                                            <td>{{ $idx + 1 }}</td>
+                                                            <td>{{ $invoice->payment->customer->name }}</td>
+                                                            <td>{{ $invoice->invoice_no }}</td>
+                                                            <td>{{ Carbon\Carbon::parse($invoice->created_at)->format('Y-m-d') }}
+                                                            </td>
+                                                            <td>{{ $invoice->status }}</td>
+                                                            <td>{{ $invoice->invoice_description }}</td>
+                                                            <td>{{ $invoice->payment->paid_amount ?? '' }}</td>
+                                                            <td>{{ $invoice->payment->due_amount ?? '' }}</td>
+                                                            <td>{{ $invoice->payment->total_amount ?? '' }}</td>
+                                                            <td>
+                                                                <a href="{{ route('admin.invoice.all.show', ['all' => $invoice->id]) }}"
+                                                                    class="btn btn-warning">view</a>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <div>
+                                                            not item
+                                                        </div>
+                                                    @endforelse
+
                                                 </tbody>
                                             </table>
                                         </div>
@@ -86,59 +107,7 @@
 
                                     <div class="row">
                                         <div class="col-12">
-                                            <table class="table table-dark">
-                                                <thead>
-                                                    <tr>
-                                                        <th>SL</th>
-                                                        <th>Category</th>
-                                                        <th>Product Name</th>
-                                                        <th>Current Stock</th>
-                                                        <th>Quantity</th>
-                                                        <th>Unit Price</th>
-                                                        <th class="text-right">Total Price</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
 
-                                                    @foreach ($invoice_details as $idx => $details)
-                                                        <tr>
-                                                            <th>{{ $idx }}</th>
-                                                            <td>{{ $details->category->name }}</td>
-                                                            <td>{{ $details->product->name }}</td>
-                                                            <td>{{ $details->product->quantity }}</td>
-                                                            <td>{{ $details->selling_qty }}</td>
-                                                            <td>{{ $details->unit_price }}</td>
-                                                            <td class="text-right">{{ $details->selling_price }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                    <tr>
-                                                        <td colspan="3">Payment Status</td>
-                                                        <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->paid_status }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="3">Sub Total</td>
-                                                        <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->total_amount + $invoice->payment->discount_amount }}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="3">Discount</td>
-                                                        <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->discount_amount }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="3">Paid Amount</td>
-                                                        <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->paid_amount }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="3">Due Amount</td>
-                                                        <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->due_amount }}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
                                         </div>
                                     </div>
 

@@ -56,7 +56,7 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
         Route::get('approved/all', [InvoiceController::class, 'approvedInvoice'])->name('approved.invoice');
 
         Route::get('daily/invoice', [InvoiceController::class, 'dailyInvoiceForm'])->name('daily.invoice.form');
-        Route::post('daily/invoice', [InvoiceController::class, 'dailyInvoice'])->name('daily.invoice');
+        Route::get('daily/invoice/date', [InvoiceController::class, 'dailyInvoice'])->name('daily.invoice');
         Route::resource('all', InvoiceController::class);
 
         Route::get('{id}/print', [PrintController::class, 'invoicePrint'])->name('print');

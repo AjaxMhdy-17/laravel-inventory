@@ -250,7 +250,7 @@ class InvoiceController extends Controller
 
     public function dailyInvoiceForm()
     {
-        $data['title'] = "Daily Invoice";
+        $data['title'] = "Range Invoice";
         $id = 64;
         $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers', 'invoice_details.category'])->findOrFail($id);
         $data['invoice_details'] = $data['invoice']->invoice_details->where('invoice_id', $id);
@@ -266,7 +266,13 @@ class InvoiceController extends Controller
             'end_date' => 'required',
         ]);
 
-        dd($data);
+        $data['invoices'] = Invoice::with(['invoice_details','payment.customer'])->whereBetween('created_at', [$data['start_date'], $data['end_date']])->get();
+
+
+        // dd($data['invoices']);
+
+        $data['title'] = "Range Invoice";
+        return view('backend.invoice.daily', $data);
 
         // Example: Filter data between dates
         // $data = YourModel::whereBetween('created_at', [$startDate, $endDate])->get();
