@@ -12,6 +12,7 @@ use App\Http\Controllers\backend\ProductController;
 use App\Http\Controllers\backend\ProfileController;
 use App\Http\Controllers\backend\PurchaseController;
 use App\Http\Controllers\backend\SiteSettingController;
+use App\Http\Controllers\backend\StockController;
 use App\Http\Controllers\backend\SupplierController;
 use App\Http\Controllers\backend\TeamController;
 use App\Http\Controllers\backend\UnitController;
@@ -62,6 +63,10 @@ Route::prefix('')->middleware(['auth', 'verified'])->name('admin.')->group(funct
         Route::get('{id}/print', [PrintController::class, 'invoicePrint'])->name('print');
 
         // Route::resource('category', CategoryController::class);
+    });
+
+    Route::prefix('stock')->name('stock.')->group(function () {
+        Route::resource('report', StockController::class);
     });
 
 

@@ -182,7 +182,7 @@
                             <a href="{{ route('admin.invoice.daily.invoice.form') }}"
                                 class="nav-link {{ request()->routeIs('admin.invoice.daily.invoice*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Daily Invoice Report</p>
+                                <p>Search Invoice Report</p>
                             </a>
                         </li>
                     </ul>
@@ -203,20 +203,20 @@
 
 
                 <li
-                    class="nav-item {{ request()->routeIs('admin.blog.*') ? ' menu-is-opening menu-open active' : '' }}">
+                    class="nav-item {{ request()->routeIs('admin.stock.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-copy"></i>
                         <p>
-                            Stock 
+                            Stock
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('admin.blog.post.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.blog.post*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.stock.report.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.stock.report*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Post</p>
+                                <p>Stock Report</p>
                             </a>
                         </li>
                         <li class="nav-item">

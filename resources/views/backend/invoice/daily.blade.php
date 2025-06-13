@@ -95,9 +95,11 @@
                                                             </td>
                                                         </tr>
                                                     @empty
-                                                        <div>
-                                                            not item
-                                                        </div>
+                                                        <tr>
+                                                            <td colspan="11" class="text-center">
+                                                                No Item Found 
+                                                            </td>
+                                                        </tr>
                                                     @endforelse
 
                                                 </tbody>
