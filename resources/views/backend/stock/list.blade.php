@@ -27,24 +27,22 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card__header">
-                                <h3 class="card-title">List Of {{ $title }}</h3>
-                                <div class="d-flex gap-3">
+                                <div>
+                                    <h2>Shop Name Stock</h2>
+                                    <p>
+                                        Shop Address
+                                    </p>
+                                    <p>
+                                        shop@mail.com
+                                    </p>
+                                </div>
+                                <div class="gap-3">
+                                    <div class="mb-3">
+                                        {{ now()->format('Y-m-d H:i') }}
+                                    </div>
                                     <button id="printButton" class="btn btn-primary d-block">
                                         Print Stock Report
                                     </button>
-
-                                    <form id="bulk-delete-form" action="{{ route('admin.team.bulkDelete') }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-
-                                        <input type="hidden" name="ids" id="bulk-delete-ids">
-
-                                        <button type="submit" id="bulk-delete"
-                                            class="btn btn-danger d-none ml-3 show-alert-delete-box">
-                                            Delete Selected
-                                        </button>
-                                    </form>
-
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -61,8 +59,6 @@
                                                     style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            {{-- <th class="sorting_disabled"><input type="checkbox"
-                                                                    id="select-all"></th> --}}
                                                             <th>SL</th>
                                                             <th>Name</th>
                                                             <th>Photo</th>
@@ -207,9 +203,17 @@
 @push('css')
     <style>
         @media print {
-            #printButton {
-                display: none;
+            #printButton,
+            .dataTables_length,
+            #DataTables_Table_0_filter,
+            .dataTables_info,
+            .dataTables_paginate.paging_simple_numbers{
+                display: none !important;
             }
+        }
+
+        p {
+            margin: 0;
         }
 
         th.sorting_disabled::before,

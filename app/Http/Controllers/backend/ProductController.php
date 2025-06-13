@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $products = Product::query();
+            $products = Product::orderBy('created_at','desc');
             return DataTables::eloquent($products)
                 ->addColumn('photo', function ($product) {
                     $imageUrl = isset($product->photo) ? asset($product->photo) : asset('backend/assets/dist/img/avatar5.png');
