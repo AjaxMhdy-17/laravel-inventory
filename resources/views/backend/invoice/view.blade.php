@@ -35,11 +35,11 @@
 
                                     {!! $invoice->status == 0
                                         ? '<a href="#" class="btn btn-info mr-3"
-                                            onclick="event.preventDefault(); document.getElementById(\'print-form-' .
+                                                                                                                                                                                            onclick="event.preventDefault(); document.getElementById(\'print-form-' .
                                             $invoice->id .
                                             '\').submit();">
-                                            Approve
-                                          </a>'
+                                                                                                                                                                                            Approve
+                                                                                                                                                                                          </a>'
                                         : '<a href="#" class="btn btn-info mr-3">Already Approved</a>' !!}
 
                                     <form id="print-form-{{ $invoice->id }}"
@@ -96,6 +96,7 @@
                                                         <th>Product Name</th>
                                                         <th>Current Stock</th>
                                                         <th>Quantity</th>
+                                                        {!! $invoice->status == 0 ? '<th>Stock After Approved</th>' : '' !!}
                                                         <th>Unit Price</th>
                                                         <th class="text-right">Total Price</th>
                                                     </tr>
@@ -109,33 +110,40 @@
                                                             <td>{{ $details->product->name }}</td>
                                                             <td>{{ $details->product->quantity }}</td>
                                                             <td>{{ $details->selling_qty }}</td>
+
+                                                            @if ($invoice->status == 0)
+                                                                <td>
+                                                                    {{ $details->product->quantity - $details->selling_qty }}
+                                                                </td>
+                                                            @endif
+
                                                             <td>{{ $details->unit_price }}</td>
                                                             <td class="text-right">{{ $details->selling_price }}</td>
                                                         </tr>
                                                     @endforeach
                                                     <tr>
-                                                        <td colspan="3">Payment Status</td>
+                                                        <td colspan="4">Payment Status</td>
                                                         <td colspan="4" class="text-right">
                                                             {{ $invoice->payment->paid_status }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="3">Sub Total</td>
+                                                        <td colspan="4">Sub Total</td>
                                                         <td colspan="4" class="text-right">
                                                             {{ $invoice->payment->total_amount + $invoice->payment->discount_amount }}
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="3">Discount</td>
+                                                        <td colspan="4">Discount</td>
                                                         <td colspan="4" class="text-right">
                                                             {{ $invoice->payment->discount_amount }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="3">Paid Amount</td>
+                                                        <td colspan="4">Paid Amount</td>
                                                         <td colspan="4" class="text-right">
                                                             {{ $invoice->payment->paid_amount }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="3">Due Amount</td>
+                                                        <td colspan="4">Due Amount</td>
                                                         <td colspan="4" class="text-right">
                                                             {{ $invoice->payment->due_amount }}</td>
                                                     </tr>
@@ -146,8 +154,9 @@
 
                                     <div class="row">
                                         <div class="col-12">
-                                            <a class="btn btn-info" href="{{route('admin.invoice.print',['id' => $invoice->id])}}">
-                                                Print 
+                                            <a class="btn btn-info"
+                                                href="{{ route('admin.invoice.print', ['id' => $invoice->id]) }}">
+                                                Print
                                             </a>
                                         </div>
                                     </div>
