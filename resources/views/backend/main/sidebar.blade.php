@@ -3,7 +3,7 @@
     <a href="index3.html" class="brand-link">
         <img src="{{ asset('backend/assets/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
             class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">AdminLTE 3</span>
+        <span class="brand-text font-weight-light">Laravel Inventory</span>
     </a>
 
     <!-- Sidebar -->
@@ -56,8 +56,6 @@
                     </a>
                 </li>
 
-
-
                 <li
                     class="nav-item {{ request()->routeIs('admin.customer.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
@@ -80,14 +78,6 @@
                                 class="nav-link {{ request()->routeIs('admin.customer.unit*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Unit</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.blog.tag.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Tag</p>
                             </a>
                         </li>
                     </ul>
@@ -188,20 +178,6 @@
                     </ul>
                 </li>
 
-
-
-                {{-- <li class="nav-item">
-                    <a href="{{ route('admin.product.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.product.*') ? 'active' : '' }}">
-                        <i class="nav-icon fa fa-square" aria-hidden="true"></i>
-                        <p>
-                            Product
-                        </p>
-                    </a>
-                </li> --}}
-
-
-
                 <li
                     class="nav-item {{ request()->routeIs('admin.stock.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
@@ -220,12 +196,29 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('admin.stock.supplier.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.stock.supplier*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Supplier Report</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.blog.category.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.blog.category*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Product Report</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a href="{{ route('admin.blog.category.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.blog.category*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Category</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="{{ route('admin.blog.tag.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">

@@ -28,7 +28,7 @@
                         <div class="card">
                             <div class="card__header">
                                 <div>
-                                    <h2>Shop Name Stock Report</h2>
+                                    <h2>Shop Name {{ $supplier->name }} 's Report</h2>
                                     <p>
                                         Shop Address
                                     </p>
@@ -41,7 +41,7 @@
                                         {{ now()->format('Y-m-d H:i') }}
                                     </div>
                                     <button id="printButton" class="btn btn-primary d-block">
-                                        Print Stock Report
+                                        Print Supplier Report
                                     </button>
                                 </div>
                             </div>
@@ -85,17 +85,26 @@
     </div>
 @endsection
 
+
 @include('backend.main.dataTableLibs')
 
 @push('js')
     <script>
         $(document).ready(function() {
+            var currentUrl = window.location.href;
+            var url = new URL(currentUrl);
+            var supplierId = url.searchParams.get('supplier_id');
+
             $('.myDatatable').DataTable({
                 serverSide: true,
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.stock.report.index') }}',
+                    url: '{{ route('admin.stock.supplier.result') }}',
+                    type: "GET",
+                    data: {
+                        supplier_id: supplierId
+                    }
                 },
                 columns: [{
                         data: 'DT_RowIndex',
