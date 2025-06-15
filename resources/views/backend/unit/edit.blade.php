@@ -28,7 +28,8 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <form class="card-body" action="{{ route('admin.customer.unit.update',['unit' => $unit->id]) }}" method="post"
+                                <form class="card-body"
+                                    action="{{ route('admin.product.unit.update', ['unit' => $unit->id]) }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
                                     @method('put')

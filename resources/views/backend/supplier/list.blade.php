@@ -13,7 +13,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">{{$title}}</li>
+                            <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div>
                 </div>
@@ -30,22 +30,8 @@
                                 <h3 class="card-title">List Of {{ $title }}</h3>
                                 <div class="d-flex gap-3">
                                     <a href="{{ route('admin.supplier.create') }}" class="btn btn-primary d-block">
-                                        Add {{$title}}
+                                        Add {{ $title }}
                                     </a>
-
-
-                                    <form id="bulk-delete-form" action="{{ route('admin.team.bulkDelete') }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-
-                                        <input type="hidden" name="ids" id="bulk-delete-ids">
-
-                                        <button type="submit" id="bulk-delete"
-                                            class="btn btn-danger d-none ml-3 show-alert-delete-box">
-                                            Delete Selected
-                                        </button>
-                                    </form>
-
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -58,7 +44,8 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="card-body table-responsive">
-                                                <table class="table table-bordered table-striped myDatatable" style="width : 100%">
+                                                <table class="table table-bordered table-striped myDatatable"
+                                                    style="width : 100%">
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
@@ -97,9 +84,8 @@
                 ajax: {
                     url: '{{ route('admin.supplier.index') }}',
                 },
-            
-                columns: [
-                    {
+
+                columns: [{
                         data: 'name',
                         name: 'name'
                     },
@@ -200,8 +186,8 @@
         }
 
         /* .sorting_disabled {
-                    background: purple !important ;
-                } */
+                        background: purple !important ;
+                    } */
         .card__header {
             display: flex;
             justify-content: space-between;

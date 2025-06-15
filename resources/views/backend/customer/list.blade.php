@@ -32,20 +32,6 @@
                                     <a href="{{ route('admin.customer.all.create') }}" class="btn btn-primary d-block">
                                         Add {{ $title }}
                                     </a>
-
-
-                                    <form id="bulk-delete-form" action="{{ route('admin.team.bulkDelete') }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-
-                                        <input type="hidden" name="ids" id="bulk-delete-ids">
-
-                                        <button type="submit" id="bulk-delete"
-                                            class="btn btn-danger d-none ml-3 show-alert-delete-box">
-                                            Delete Selected
-                                        </button>
-                                    </form>
-
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -201,8 +187,8 @@
         }
 
         /* .sorting_disabled {
-                        background: purple !important ;
-                    } */
+                            background: purple !important ;
+                        } */
         .card__header {
             display: flex;
             justify-content: space-between;

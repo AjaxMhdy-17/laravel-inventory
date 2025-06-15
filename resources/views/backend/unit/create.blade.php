@@ -28,7 +28,7 @@
                         <div class="card">
                             <div class="card-body">
 
-                                <form class="card-body" action="{{ route('admin.customer.unit.store') }}" method="post"
+                                <form class="card-body" action="{{ route('admin.product.unit.store') }}" method="post"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="mb-3">
@@ -46,8 +46,7 @@
                                     <div class="mb-3">
                                         <label>Status</label>
                                         <div>
-                                            <input type="checkbox" name="status" 
-                                                data-toggle="toggle" data-size="sm">
+                                            <input type="checkbox" name="status" data-toggle="toggle" data-size="sm">
                                         </div>
                                     </div>
 

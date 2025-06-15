@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\backend\BlogCategoryController;
-use App\Http\Controllers\backend\BlogController as BackendBlogController;
 use App\Http\Controllers\backend\BlogTagController;
 use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\backend\CustomerController;
@@ -15,7 +14,6 @@ use App\Http\Controllers\backend\SiteSettingController;
 use App\Http\Controllers\backend\StockController;
 use App\Http\Controllers\backend\SupplierController;
 use App\Http\Controllers\backend\SupplierStockController;
-use App\Http\Controllers\backend\TeamController;
 use App\Http\Controllers\backend\UnitController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,16 +22,18 @@ Route::redirect('/', '/dashboard');
 Route::middleware(['auth', 'verified'])->name('admin.')->group(function () {
     Route::resource('dashboard', DashboardController::class);
     Route::resource('profile', ProfileController::class);
-    Route::post('team/bulk-delete', [TeamController::class, 'bulkDelete'])->name('team.bulkDelete');
-    Route::resource('team', TeamController::class);
     Route::resource('supplier', SupplierController::class);
     Route::prefix('customer')->name('customer.')->group(function () {
         Route::resource('all', CustomerController::class);
-        Route::resource('unit', UnitController::class);
+        
     });
     Route::prefix('product')->name('product.')->group(function () {
         Route::resource('all', ProductController::class);
         Route::resource('category', CategoryController::class);
+
+        Route::resource('unit', UnitController::class);
+
+        
         Route::get('purchase/category', [PurchaseController::class, 'getCategory'])->name('purchase.getCategory');
         Route::get('purchase/product', [PurchaseController::class, 'getProduct'])->name('purchase.getProduct');
         Route::get('purchase/unit/product', [PurchaseController::class, 'getUnitProduct'])->name('purchase.unit.getProduct');
@@ -59,12 +59,6 @@ Route::middleware(['auth', 'verified'])->name('admin.')->group(function () {
 
     Route::get('site-setting', [SiteSettingController::class, 'index'])->name('site-setting.index');
     Route::post('site-setting', [SiteSettingController::class, 'store'])->name('site-setting.store');
-    Route::prefix('blog')->name('blog.')->group(function () {
-        Route::resource('category', BlogCategoryController::class);
-        Route::resource('tag', BlogTagController::class);
-        // Route::post('post/bulk-delete', [BackendBlogController::class, 'bulkDelete'])->name('post.bulkDelete');
-        Route::resource('post', BackendBlogController::class);
-    });
 });
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

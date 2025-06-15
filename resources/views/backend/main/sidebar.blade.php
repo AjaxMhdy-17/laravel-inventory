@@ -35,17 +35,6 @@
                         </p>
                     </a>
                 </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('admin.team.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.team.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-address-book"></i>
-                        <p>
-                            Team
-                        </p>
-                    </a>
-                </li>
-
                 <li class="nav-item">
                     <a href="{{ route('admin.supplier.index') }}"
                         class="nav-link {{ request()->routeIs('admin.supplier.*') ? 'active' : '' }}">
@@ -55,7 +44,6 @@
                         </p>
                     </a>
                 </li>
-
                 <li
                     class="nav-item {{ request()->routeIs('admin.customer.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
@@ -73,17 +61,25 @@
                                 <p>All Customer List</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            <a href="{{ route('admin.customer.unit.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.customer.unit*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.customer.all.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.customer.all*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Unit</p>
+                                <p>Credit Customer List</p>
+                            </a>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.customer.all.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.customer.all*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Paid Customer List</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-
-
                 <li
                     class="nav-item {{ request()->routeIs('admin.product.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
@@ -112,6 +108,14 @@
                         </li>
 
                         <li class="nav-item">
+                            <a href="{{ route('admin.product.unit.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.product.unit*') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Unit</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a href="{{ route('admin.product.purchase.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.product.purchase*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
@@ -122,8 +126,6 @@
                         </li>
                     </ul>
                 </li>
-
-
                 <li
                     class="nav-item {{ request()->routeIs('admin.invoice.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
@@ -177,7 +179,6 @@
                         </li>
                     </ul>
                 </li>
-
                 <li
                     class="nav-item {{ request()->routeIs('admin.stock.*') ? ' menu-is-opening menu-open active' : '' }}">
                     <a href="#" class="nav-link">
@@ -200,30 +201,6 @@
                                 class="nav-link {{ request()->routeIs('admin.stock.supplier*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Supplier Report</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.blog.category.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.blog.category*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Product Report</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.blog.category.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.blog.category*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Category</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('admin.blog.tag.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.blog.tag*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Tag</p>
                             </a>
                         </li>
                     </ul>

@@ -32,9 +32,9 @@ class UnitController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.customer.unit.edit', $unit->id) . '">Edit</a>
+                                <a class="dropdown-item" href="' . route('admin.product.unit.edit', $unit->id) . '">Edit</a>
                                 <div class="dropdown-divider"></div>
-                                 <form class="delete-form" method="POST" action="' . route('admin.customer.unit.destroy', ['unit' => $unit->id]) . '">
+                                 <form class="delete-form" method="POST" action="' . route('admin.product.unit.destroy', ['unit' => $unit->id]) . '">
                                     ' . csrf_field() . '
                                     ' . method_field("DELETE") . '
                                      <button type="submit" class="dropdown-item text-danger show-alert-delete-box">Delete</button>
@@ -66,7 +66,7 @@ class UnitController extends Controller
             'message' => "Unit Added Successfully !",
             'alert-type' => 'success'
         );
-        return redirect()->route('admin.customer.unit.index')->with($notification);
+        return redirect()->route('admin.product.unit.index')->with($notification);
     }
 
 
@@ -89,7 +89,7 @@ class UnitController extends Controller
             'message' => "Unit Updated Successfully !",
             'alert-type' => 'success'
         );
-        return redirect()->route('admin.customer.unit.index')->with($notification);
+        return redirect()->route('admin.product.unit.index')->with($notification);
     }
 
 
@@ -101,6 +101,6 @@ class UnitController extends Controller
             'message' => "Unit Deleted Successfully !",
             'alert-type' => 'success'
         );
-        return redirect()->route('admin.customer.unit.index')->with($notification);
+        return redirect()->route('admin.product.unit.index')->with($notification);
     }
 }
