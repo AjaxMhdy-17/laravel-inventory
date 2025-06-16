@@ -63,8 +63,8 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.customer.all.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.customer.all*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.customer.credit.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.customer.credit*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Credit Customer List</p>
                             </a>
@@ -72,8 +72,8 @@
 
 
                         <li class="nav-item">
-                            <a href="{{ route('admin.customer.all.index') }}"
-                                class="nav-link {{ request()->routeIs('admin.customer.all*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.customer.paid.index') }}"
+                                class="nav-link {{ request()->routeIs('admin.customer.paid*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Paid Customer List</p>
                             </a>

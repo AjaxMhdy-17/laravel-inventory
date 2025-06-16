@@ -4,6 +4,8 @@ use App\Http\Controllers\backend\BlogCategoryController;
 use App\Http\Controllers\backend\BlogTagController;
 use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\backend\CustomerController;
+use App\Http\Controllers\backend\CustomerCreditController;
+use App\Http\Controllers\backend\CustomerPaidController;
 use App\Http\Controllers\backend\DashboardController;
 use App\Http\Controllers\backend\InvoiceController;
 use App\Http\Controllers\backend\PrintController;
@@ -25,15 +27,13 @@ Route::middleware(['auth', 'verified'])->name('admin.')->group(function () {
     Route::resource('supplier', SupplierController::class);
     Route::prefix('customer')->name('customer.')->group(function () {
         Route::resource('all', CustomerController::class);
-        
+        Route::get("credit", [CustomerCreditController::class, 'index'])->name('credit.index');
+        Route::get("paid", [CustomerPaidController::class, 'index'])->name('paid.index');
     });
     Route::prefix('product')->name('product.')->group(function () {
         Route::resource('all', ProductController::class);
         Route::resource('category', CategoryController::class);
-
         Route::resource('unit', UnitController::class);
-
-        
         Route::get('purchase/category', [PurchaseController::class, 'getCategory'])->name('purchase.getCategory');
         Route::get('purchase/product', [PurchaseController::class, 'getProduct'])->name('purchase.getProduct');
         Route::get('purchase/unit/product', [PurchaseController::class, 'getUnitProduct'])->name('purchase.unit.getProduct');

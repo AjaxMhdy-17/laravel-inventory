@@ -13,7 +13,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">{{$title}}</li>
+                            <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div>
                 </div>
@@ -27,25 +27,22 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card__header">
-                                <h3 class="card-title">List Of {{ $title }}</h3>
-                                <div class="d-flex gap-3">
-                                    <a href="{{ route('admin.supplier.create') }}" class="btn btn-primary d-block">
-                                        Add {{$title}}
-                                    </a>
-
-
-                                    <form id="bulk-delete-form" action="{{ route('admin.team.bulkDelete') }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-
-                                        <input type="hidden" name="ids" id="bulk-delete-ids">
-
-                                        <button type="submit" id="bulk-delete"
-                                            class="btn btn-danger d-none ml-3 show-alert-delete-box">
-                                            Delete Selected
-                                        </button>
-                                    </form>
-
+                                <div>
+                                    <h2>Shop Name {{ $supplier->name }} 's Report</h2>
+                                    <p>
+                                        Shop Address
+                                    </p>
+                                    <p>
+                                        shop@mail.com
+                                    </p>
+                                </div>
+                                <div class="gap-3">
+                                    <div class="mb-3">
+                                        {{ now()->format('Y-m-d H:i') }}
+                                    </div>
+                                    <button id="printButton" class="btn btn-primary d-block">
+                                        Print Supplier Report
+                                    </button>
                                 </div>
                             </div>
                             <!-- /.card-header -->
@@ -58,16 +55,17 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="card-body table-responsive">
-                                                <table class="table table-bordered table-striped myDatatable" style="width : 100%">
+                                                <table class="table table-bordered table-striped myDatatable"
+                                                    style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            <th class="sorting_disabled"><input type="checkbox"
-                                                                    id="select-all"></th>
+                                                            <th>SL</th>
                                                             <th>Name</th>
-                                                            <th>Designation</th>
-                                                            <th>Image</th>
-                                                            <th>Status</th>
-                                                            <th>Created</th>
+                                                            <th>Photo</th>
+                                                            <th>Supplier</th>
+                                                            <th>Category</th>
+                                                            <th>Unit</th>
+                                                            <th>Stock</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -77,9 +75,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card -->
                     </div>
                 </div>
             </div>
@@ -87,69 +83,63 @@
     </div>
 @endsection
 
+
 @include('backend.main.dataTableLibs')
 
 @push('js')
     <script>
         $(document).ready(function() {
+            var currentUrl = window.location.href;
+            var url = new URL(currentUrl);
+            var supplierId = url.searchParams.get('supplier_id');
+
             $('.myDatatable').DataTable({
                 serverSide: true,
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.team.index') }}',
-                },
-                dom: `<"row mb-3"
-                <"col-md-6"B>
-                <"col-md-6"f>
-             >
-             <"row"
-                <"col-sm-12"tr>
-             >
-             <"row"
-                <"col-sm-5"i>
-                <"col-sm-7"p>
-             >`,
-                buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'],
-                language: {
-                    search: "Search:",
-                    lengthMenu: "Show _MENU_ entries",
-                    zeroRecords: "No matching records found",
-                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    url: '{{ route('admin.stock.supplier.result') }}',
+                    type: "GET",
+                    data: {
+                        supplier_id: supplierId
+                    }
                 },
                 columns: [{
-                        data: 'id',
-                        name: 'id',
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        title: 'SL',
                         orderable: false,
                         searchable: false,
-                        render: function(data, type, full, meta) {
-                            return `<input type="checkbox" class="row-checkbox" value="${data}">`;
-                        },
-                    },
-                    {
+                        className: "text-center"
+                    }, {
                         data: 'name',
                         name: 'name'
                     },
                     {
-                        data: 'designation',
-                        name: 'designation',
-                        className: "text-center",
-                    },
-                    {
                         data: 'photo',
                         name: 'photo',
+                        className: "text-center",
+                    },
+                    {
+                        data: 'supplier',
+                        name: 'supplier',
                         orderable: false,
                         className: "text-center",
                     },
                     {
-                        data: 'status',
-                        name: 'status',
+                        data: 'category',
+                        name: 'category',
                         orderable: false,
                         className: "text-center",
                     },
                     {
-                        data: 'created_at',
-                        name: 'created_at',
+                        data: 'unit',
+                        name: 'unit',
+                        className: "text-center",
+                    },
+                    {
+                        data: 'quantity',
+                        name: 'quantity',
                         className: "text-center",
                     },
                     {
@@ -171,7 +161,6 @@
                 $('.row-checkbox').prop('checked', this.checked).trigger('change');
             });
 
-            // SweetAlert on delete click
             $(document).on('click', '.show-alert-delete-box', function(event) {
                 event.preventDefault();
                 const form = $(this).closest("form");
@@ -218,17 +207,28 @@
 @endpush
 
 
-
 @push('css')
     <style>
+        @media print {
+
+            #printButton,
+            .dataTables_length,
+            #DataTables_Table_0_filter,
+            .dataTables_info,
+            .dataTables_paginate.paging_simple_numbers {
+                display: none !important;
+            }
+        }
+
+        p {
+            margin: 0;
+        }
+
         th.sorting_disabled::before,
         th.sorting_disabled::after {
             content: "" !important;
         }
 
-        /* .sorting_disabled {
-                    background: purple !important ;
-                } */
         .card__header {
             display: flex;
             justify-content: space-between;
@@ -245,4 +245,13 @@
             left: -50px !important;
         }
     </style>
+@endpush
+
+
+@push('js')
+    <script>
+        $('#printButton').on('click', function() {
+            window.print();
+        });
+    </script>
 @endpush
