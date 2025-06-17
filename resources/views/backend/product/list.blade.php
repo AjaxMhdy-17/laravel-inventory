@@ -48,8 +48,6 @@
                                                     style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            <th class="sorting_disabled"><input type="checkbox"
-                                                                    id="select-all"></th>
                                                             <th>Name</th>
                                                             <th>Photo</th>
                                                             <th>Supplier</th>
@@ -88,15 +86,6 @@
                     url: '{{ route('admin.product.all.index') }}',
                 },
                 columns: [{
-                        data: 'id',
-                        name: 'id',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, full, meta) {
-                            return `<input type="checkbox" class="row-checkbox" value="${data}">`;
-                        },
-                    },
-                    {
                         data: 'name',
                         name: 'name'
                     },
@@ -200,10 +189,6 @@
         th.sorting_disabled::after {
             content: "" !important;
         }
-
-        /* .sorting_disabled {
-                                        background: purple !important ;
-                                    } */
         .card__header {
             display: flex;
             justify-content: space-between;

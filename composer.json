@@ -36,7 +36,8 @@
         },
         "files": [
             "app/Helpers/cleanString.php",
-            "app/Helpers/randNumber.php"
+            "app/Helpers/randNumber.php",
+            "app/Helpers/customerTable.php"
         ]
     },
     "autoload-dev": {

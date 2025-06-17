@@ -4,7 +4,6 @@ namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
-use App\Models\Supplier;
 use App\Services\CustomerService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -65,7 +64,7 @@ class CustomerController extends Controller
         $data['title'] = "Customer";
         return view('backend.customer.create', $data);
     }
-   
+
     public function store(Request $request)
     {
         $data = $this->dataValidation($request);
@@ -85,7 +84,7 @@ class CustomerController extends Controller
         return view('backend.customer.edit', $data);
     }
 
-    
+
     public function update(Request $request, string $id)
     {
         $data = $this->dataValidation($request, $id);

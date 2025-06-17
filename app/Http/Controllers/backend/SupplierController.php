@@ -87,7 +87,7 @@ class SupplierController extends Controller
     public function edit(string $id)
     {
         $data['supplier'] = $this->supplierService->find($id);
-        $data['title'] = "Supplier Edit";
+        $data['title'] = "Supplier";
         return view('backend.supplier.edit', $data);
     }
 

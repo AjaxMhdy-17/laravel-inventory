@@ -20,15 +20,6 @@ class PurchaseController extends Controller
         if ($request->ajax()) {
             $purchases = Purchase::query();
             return DataTables::eloquent($purchases)
-                // ->addColumn('photo', function ($product) {
-                //     $imageUrl = isset($product->photo) ? asset($product->photo) : asset('backend/assets/dist/img/avatar5.png');
-                //     return '<img src="' . $imageUrl . '" alt="Photo" width="50" height="50">';
-                // })
-                // ->addColumn('supplier', function ($product) {
-                //     $supplierName = optional($product->supplier)->name ?? 'N/A';
-                //     return "<span>{$supplierName}</span>";
-                // })
-
                 ->addColumn('status', function ($purchase) {
                     return $purchase->status == 1 ? "<span class='badge badge-primary'>Approved</span>" : " <span class='badge badge-danger'>Pending</span>";
                 })
@@ -95,18 +86,6 @@ class PurchaseController extends Controller
             'stock' => $product->quantity
         ]);
     }
-
-
-    // public function getProduct(Request $request)
-    // {
-    //     return response()->json([
-    //             'id' => $product->id,
-    //             'name' => $product->name,
-    //             'quantity' => $product->quantity,
-    //     ]);
-    // }
-
-
 
     public function create()
     {
@@ -197,32 +176,6 @@ class PurchaseController extends Controller
         );
         return back()->with($notification);
     }
-
-
-    // public function edit(string $id)
-    // {
-    //     $data['title'] = "Product Edit";
-    //     // $data['suppliers'] = $this->productService->suppliers();
-    //     // $data['categories'] =  $this->productService->categories();
-    //     // $data['units'] = $this->productService->units();
-    //     // $data['product'] = $this->productService->find($id);
-    //     return view('backend.product.edit', $data);
-    // }
-
-
-    // public function update(Request $request, string $id)
-    // {
-    //     // $product = $this->productService->find($id);
-    //     $data = $this->validateData($request);
-    //     // $this->productService->update($data, $id);
-    //     $notification = array(
-    //         'message' => "Product Updated Successfully !",
-    //         'alert-type' => 'success'
-    //     );
-    //     return redirect()->route('admin.product.index')->with($notification);
-    // }
-
-
     public function destroy(string $id)
     {
         $purchase = Purchase::findOrFail($id);
