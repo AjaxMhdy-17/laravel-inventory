@@ -28,7 +28,7 @@
                         <div class="card">
                             <div class="card__header">
                                 <div>
-                                    <h2>Shop Name {{ $supplier->name }} 's Report</h2>
+                                    <h2>Shop Name</h2>
                                     <p>
                                         Shop Address
                                     </p>
@@ -41,7 +41,7 @@
                                         {{ now()->format('Y-m-d H:i') }}
                                     </div>
                                     <button id="printButton" class="btn btn-primary d-block">
-                                        Print Supplier Report
+                                        Print Paid Customer Report
                                     </button>
                                 </div>
                             </div>
@@ -59,13 +59,10 @@
                                                     style="width : 100%">
                                                     <thead>
                                                         <tr>
-                                                            <th>SL</th>
                                                             <th>Name</th>
-                                                            <th>Photo</th>
-                                                            <th>Supplier</th>
-                                                            <th>Category</th>
-                                                            <th>Unit</th>
-                                                            <th>Stock</th>
+                                                            <th>Invoice No</th>
+                                                            <th>Date</th>
+                                                            <th>Due Amount</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -75,7 +72,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- /.card-body -->
                         </div>
+                        <!-- /.card -->
                     </div>
                 </div>
             </div>
@@ -83,63 +82,37 @@
     </div>
 @endsection
 
-
 @include('backend.main.dataTableLibs')
 
 @push('js')
     <script>
         $(document).ready(function() {
-            var currentUrl = window.location.href;
-            var url = new URL(currentUrl);
-            var supplierId = url.searchParams.get('supplier_id');
-
             $('.myDatatable').DataTable({
                 serverSide: true,
                 processing: true,
                 responsive: true,
                 ajax: {
-                    url: '{{ route('admin.stock.supplier.result') }}',
-                    type: "GET",
-                    data: {
-                        supplier_id: supplierId
-                    }
+                    url: '{{ route('admin.customer.paid.index') }}',
                 },
+
                 columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        title: 'SL',
-                        orderable: false,
-                        searchable: false,
-                        className: "text-center"
-                    }, {
                         data: 'name',
                         name: 'name'
                     },
                     {
-                        data: 'photo',
-                        name: 'photo',
+                        data: 'invoice_id',
+                        name: 'invoice_id',
+                        orderable: true,
                         className: "text-center",
                     },
                     {
-                        data: 'supplier',
-                        name: 'supplier',
-                        orderable: false,
+                        data: 'created_at',
+                        name: 'created_at',
                         className: "text-center",
                     },
                     {
-                        data: 'category',
-                        name: 'category',
-                        orderable: false,
-                        className: "text-center",
-                    },
-                    {
-                        data: 'unit',
-                        name: 'unit',
-                        className: "text-center",
-                    },
-                    {
-                        data: 'quantity',
-                        name: 'quantity',
+                        data: 'due_amount',
+                        name: 'due_amount',
                         className: "text-center",
                     },
                     {
@@ -161,6 +134,7 @@
                 $('.row-checkbox').prop('checked', this.checked).trigger('change');
             });
 
+            // SweetAlert on delete click
             $(document).on('click', '.show-alert-delete-box', function(event) {
                 event.preventDefault();
                 const form = $(this).closest("form");
@@ -205,6 +179,7 @@
         });
     </script>
 @endpush
+
 
 
 @push('css')

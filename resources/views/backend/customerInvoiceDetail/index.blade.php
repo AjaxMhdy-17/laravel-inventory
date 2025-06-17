@@ -32,28 +32,21 @@
                                     Invoice Number : {{ $invoice->invoice_no }}
                                 </div>
                                 <div>
+
                                     {!! $invoice->status == 0
-                                        ? '<a href="#" class="btn btn-info mr-3 show-alert"
-                                                                                                                                                        data-invoice-id="' .
+                                        ? '<a href="#" class="btn btn-info mr-3"
+                                                                                                                                                                                                                                                                    onclick="event.preventDefault(); document.getElementById(\'print-form-' .
                                             $invoice->id .
-                                            '"
-                                                                                                                                                        data-is-delivered="' .
-                                            $invoice->isDelivered .
-                                            '"> Approve </a>'
+                                            '\').submit();">
+                                                                                                                                                                                                                                                                    Approve
+                                                                                                                                                                                                                                                                  </a>'
                                         : '<a href="#" class="btn btn-info mr-3">Already Approved</a>' !!}
 
                                     <form id="print-form-{{ $invoice->id }}"
                                         action="{{ route('admin.invoice.approve.invoice', ['id' => $invoice->id]) }}"
                                         method="POST" style="display: none;">
                                         @csrf
-                                        <input type="hidden" name="due_paid_amount" value="0">
-
-                                        {{-- always include input, default false --}}
-                                        <input type="hidden" name="isDelivered"
-                                            value="{{ $invoice->isDelivered == 0 ? 'false' : 'true' }}">
                                     </form>
-
-
                                     <a href="{{ route('admin.invoice.all.index') }}" class="btn btn-primary">Back</a>
                                 </div>
                             </div>
@@ -145,11 +138,6 @@
                                                             {{ $invoice->payment->discount_amount }}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="4">Customer Will Pay</td>
-                                                        <td colspan="4" class="text-right">
-                                                            {{ $invoice->payment->total_amount }}</td>
-                                                    </tr>
-                                                    <tr>
                                                         <td colspan="4">Paid Amount</td>
                                                         <td colspan="4" class="text-right">
                                                             {{ $invoice->payment->paid_amount }}</td>
@@ -190,10 +178,6 @@
 
 @push('css')
     <style>
-        #swal-input-delivered {
-            margin-top: 10px;
-        }
-
         th.sorting_disabled::before,
         th.sorting_disabled::after {
             content: "" !important;
@@ -215,71 +199,4 @@
             left: -50px !important;
         }
     </style>
-@endpush
-
-@push('js')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(document).on('click', '.show-alert', function(event) {
-                event.preventDefault();
-
-                let invoiceId = $(this).data('invoice-id');
-                let isDeliveredFlag = $(this).data('is-delivered'); // 0 = not delivered
-                let form = $('#print-form-' + invoiceId);
-
-                let htmlInputs =
-                    '<input id="swal-input-amount" class="swal2-input" type="number" placeholder="Due Paid Amount" value="0">';
-
-                if (isDeliveredFlag == 0) {
-                    // Show dropdown if not yet delivered
-                    htmlInputs +=
-                        '<select id="swal-input-delivered" class="swal2-input">' +
-                        '<option value="false" selected>Is Delivered? No</option>' +
-                        '<option value="true">Is Delivered? Yes</option>' +
-                        '</select>';
-                } else {
-                    // Show plain text if already delivered
-                    htmlInputs +=
-                        '<div class="swal2-html-container" style="margin-top:10px;">Product Delivered</div>';
-                }
-
-                Swal.fire({
-                    title: 'Approve Invoice',
-                    html: htmlInputs,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Approve',
-                    cancelButtonText: 'Cancel',
-                    preConfirm: () => {
-                        const dueAmount = document.getElementById('swal-input-amount').value;
-                        let isDelivered = form.find('input[name="isDelivered"]')
-                            .val(); // use existing value
-
-                        if (document.getElementById('swal-input-delivered')) {
-                            isDelivered = document.getElementById('swal-input-delivered').value;
-                        }
-
-                        if (dueAmount === '' || isNaN(dueAmount)) {
-                            Swal.showValidationMessage('Please enter a valid amount');
-                            return false;
-                        }
-
-                        return {
-                            due_paid_amount: dueAmount,
-                            isDelivered: isDelivered
-                        };
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.find('input[name="due_paid_amount"]').val(result.value
-                            .due_paid_amount);
-                        form.find('input[name="isDelivered"]').val(result.value.isDelivered);
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
 @endpush

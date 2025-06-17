@@ -54,9 +54,6 @@ Route::middleware(['auth', 'verified'])->name('admin.')->group(function () {
         Route::get('suppliers', [SupplierStockController::class, 'index'])->name('supplier.index');
         Route::get('supplier', [SupplierStockController::class, 'stock'])->name('supplier.result');
     });
-
-
-
     Route::get('site-setting', [SiteSettingController::class, 'index'])->name('site-setting.index');
     Route::post('site-setting', [SiteSettingController::class, 'store'])->name('site-setting.store');
 });

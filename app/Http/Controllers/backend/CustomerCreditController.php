@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
+use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -44,5 +44,15 @@ class CustomerCreditController extends Controller
         }
         $data['title'] = "Credit Customer";
         return view('backend.customerCredit.list', $data);
+    }
+
+
+    public function customerInvoiceDetail($id)
+    {
+        $data['title'] = "Invoice Details";
+        $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers', 'invoice_details.category'])->findOrFail($id);
+        $data['invoice_details'] = $data['invoice']->invoice_details->where('invoice_id', $id);
+
+        return view('backend.invoice.view', $data);
     }
 }

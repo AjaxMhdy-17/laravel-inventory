@@ -195,33 +195,67 @@ class InvoiceController extends Controller
     }
 
 
-    public function approveInvoice($id)
+    public function approveInvoice(Request $request,  $id)
     {
-        $invoice = Invoice::with('invoice_details')->findOrFail($id);
 
-        DB::transaction(function () use ($invoice) {
-            $invoice->status = 1;
-            $invoice->save();
+        $data = $request->validate([
+            'due_paid_amount' => 'sometimes',
+            'isDelivered' => 'sometimes',
+        ]);
+
+        $invoice = Invoice::with(['invoice_details', 'payment'])->findOrFail($id);
+        $due_amount = (int) $invoice->payment->due_amount - (int) $data['due_paid_amount'];
+
+        if ($due_amount < 0) {
+            $notification = array(
+                'message' => "Please Enter Amount Carefully !",
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
+        $message = "Payment Successful!";
+        DB::transaction(function () use ($invoice, $data, $due_amount, $id) {
+
             $ids = $invoice->invoice_details->pluck('product_id');
             $products = Product::whereIn('id', $ids)->orderBy('id')->get();
             $invoice_details = $invoice->invoice_details->sortBy('product_id')->values();
-            foreach ($products as $idx => $product) {
 
-                if ((int)$product['quantity'] < (int)$invoice_details[$idx]['selling_qty']) {
-                    $notification = array(
-                        'message' => "Insufficient Stock !",
-                        'alert-type' => 'warning'
-                    );
-                    return back()->with($notification);
+            if ($invoice->isDelivered == 0 && $data['isDelivered'] == "true") {
+
+                foreach ($products as $idx => $product) {
+                    if ((int)$product['quantity'] < (int)$invoice_details[$idx]['selling_qty']) {
+                        $notification = array(
+                            'message' => "Insufficient Stock !",
+                            'alert-type' => 'warning'
+                        );
+                        return back()->with($notification);
+                    }
+                    $product['quantity'] = (string)((int)$product['quantity'] - (int) $invoice_details[$idx]['selling_qty']);
+                    $product->save();
                 }
+            }
 
-                $product['quantity'] = (string)((int)$product['quantity'] - (int) $invoice_details[$idx]['selling_qty']);
-                $product->save();
+            $invoice->payment->paid_amount = (int) $invoice->payment->paid_amount + (int) $data['due_paid_amount'];
+            $invoice->payment->current_paid_amount = (int) $invoice->payment->current_paid_amount + (int) $data['due_paid_amount'];
+            $invoice->payment->due_amount = $due_amount;
+            $delivered = $data['isDelivered'] === 'true' ? 1 : 0;
+            $invoice->isDelivered = $delivered;
+            $invoice->save();
+            $invoice->payment->save();
+            $invoice = Invoice::with('payment')->findOrFail($id);
+            $flag = $invoice->payment->paid_amount == $invoice->payment->total_amount;
+            if ($flag == true) {
+                $invoice->status = 1;
+                $invoice->save();
+                $invoice->payment->update([
+                    "paid_status" => "full_paid"
+                ]);
+                $message = "Invoice Approved Successfully !";
             }
         });
 
         $notification = array(
-            'message' => "Invoice Approved Successfully !",
+            'message' => $message,
             'alert-type' => 'success'
         );
         return back()->with($notification);
@@ -261,7 +295,7 @@ class InvoiceController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
-        $data['invoices'] = Invoice::with(['invoice_details','payment.customer'])->whereBetween('created_at', [$data['start_date'], $data['end_date']])->get();
+        $data['invoices'] = Invoice::with(['invoice_details', 'payment.customer'])->whereBetween('created_at', [$data['start_date'], $data['end_date']])->get();
         $data['title'] = "Range Invoice";
         return view('backend.invoice.daily', $data);
     }
