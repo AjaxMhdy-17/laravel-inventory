@@ -32,12 +32,12 @@
                                     Invoice Number : {{ $invoice->invoice_no }}
                                 </div>
                                 <div>
-                                    {!! $invoice->status == 0
+                                    {!! $invoice->status == 0 || $invoice->isDelivered == 0
                                         ? '<a href="#" class="btn btn-info mr-3 show-alert"
-                                                                                                                                                        data-invoice-id="' .
+                                                                                                                                                                                                                                                                                                                                            data-invoice-id="' .
                                             $invoice->id .
                                             '"
-                                                                                                                                                        data-is-delivered="' .
+                                                                                                                                                                                                                                                                                                                                            data-is-delivered="' .
                                             $invoice->isDelivered .
                                             '"> Approve </a>'
                                         : '<a href="#" class="btn btn-info mr-3">Already Approved</a>' !!}
@@ -84,8 +84,8 @@
                                                     </tr>
                                                     <tr>
                                                         <th scope="row"></th>
-                                                        <td>Description : {!! $invoice->status == 1
-                                                            ? " <span class='badge badge-success'>Paid</span>"
+                                                        <td>Description : {!! $invoice->status == 1 && $invoice->isDelivered == 1
+                                                            ? " <span class='badge badge-success'>Completed</span>"
                                                             : "<span class='badge badge-warning'>Not Paid</span>" !!} </td>
                                                     </tr>
                                                 </tbody>
@@ -103,7 +103,7 @@
                                                         <th>Product Name</th>
                                                         <th>Current Stock</th>
                                                         <th>Quantity</th>
-                                                        {!! $invoice->status == 0 ? '<th>Stock After Approved</th>' : '' !!}
+                                                        {!! $invoice->status == 0 && $invoice->isDelivered == 0 ? '<th>Stock After Delivery</th>' : '' !!}
                                                         <th>Unit Price</th>
                                                         <th class="text-right">Total Price</th>
                                                     </tr>
@@ -118,7 +118,7 @@
                                                             <td>{{ $details->product->quantity }}</td>
                                                             <td>{{ $details->selling_qty }}</td>
 
-                                                            @if ($invoice->status == 0)
+                                                            @if ($invoice->status == 0 && $invoice->isDelivered == 0)
                                                                 <td>
                                                                     {{ $details->product->quantity - $details->selling_qty }}
                                                                 </td>

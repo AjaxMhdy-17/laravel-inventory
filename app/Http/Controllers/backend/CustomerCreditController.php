@@ -33,7 +33,9 @@ class CustomerCreditController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', $payment->invoice_id) . '">View</a>
+                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', $payment->invoice_id) . '">Invoice Details</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="' . route('admin.customer.history.index', ['id' => $payment->customer_id]) . '">Customer History</a>
                             </div>
                         </div>
                        </div>

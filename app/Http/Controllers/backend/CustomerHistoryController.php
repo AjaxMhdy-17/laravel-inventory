@@ -8,12 +8,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
-class CustomerPaidController extends Controller
+class CustomerHistoryController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $id)
     {
+
         if ($request->ajax()) {
-            $payments = Payment::where('paid_status', 'full_paid')->latest();
+            $payments = Payment::where('customer_id', $id)->latest();
             return DataTables::eloquent($payments)
                 ->addColumn('name', function ($payment) {
                     return $payment->customer->name;
@@ -32,9 +33,9 @@ class CustomerPaidController extends Controller
                                 More
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', $payment->invoice_id) . '">View</a>
+                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', $payment->invoice_id) . '">Invoice Details</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="' . route('admin.customer.history.index', ['id' => $payment->customer_id]) . '">Customer History</a>
+                                <a class="dropdown-item" href="' . route('admin.invoice.all.show', $payment->invoice_id) . '">Customer History</a>
                             </div>
                         </div>
                        </div>
@@ -43,7 +44,7 @@ class CustomerPaidController extends Controller
                 ->rawColumns(['action', 'photo'])
                 ->make(true);
         }
-        $data['title'] = "Credit Paid";
-        return view('backend.customerPaid.list', $data);
+        $data['title'] = "Customer History";
+        return view('backend.customerHistory.list', $data);
     }
 }

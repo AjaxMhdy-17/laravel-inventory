@@ -178,6 +178,11 @@ class InvoiceController extends Controller
         $data['invoice'] = Invoice::with(['user', 'payment.customer', 'invoice_details.product.suppliers', 'invoice_details.category'])->findOrFail($id);
         $data['invoice_details'] = $data['invoice']->invoice_details->where('invoice_id', $id);
 
+        if ($data['invoice']->payment->paid_amount > 0 && $data['invoice']->payment->paid_status == "full_due") {
+            $data['invoice']->payment->paid_status = "partial_paid";
+            $data['invoice']->payment->save();
+        }
+
         return view('backend.invoice.view', $data);
     }
 
