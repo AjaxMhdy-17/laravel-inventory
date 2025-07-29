@@ -115,7 +115,7 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('admin.product.purchase.index') }}"
                                 class="nav-link {{ request()->routeIs('admin.product.purchase*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
@@ -123,7 +123,7 @@
                                     Purchase
                                 </p>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </li>
                 <li

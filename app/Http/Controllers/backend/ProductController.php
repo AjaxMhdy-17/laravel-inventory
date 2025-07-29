@@ -14,6 +14,7 @@ use Yajra\DataTables\Facades\DataTables;
 class ProductController extends Controller
 {
     use HandlesImageUploads;
+
     public ProductService $productService;
 
     public function __construct(ProductService $productService)

@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Repositories\CustomerRepository;
 use App\Traits\HandlesImageUploads;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\ImageManager;
+
+// use App\Traits\HandlesImageUploads;
 
 class CustomerService
 {
